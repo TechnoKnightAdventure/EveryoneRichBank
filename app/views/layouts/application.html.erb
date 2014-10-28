@@ -39,11 +39,12 @@
                     <a href="/#portfolio">My Listed Items</a>
                 </li>
                 <li class="page-scroll">
-                    <a href="/users/sign_up">Sign Up</a>
+                      <%= render 'devise/menu/registration_items' %>
                 </li>
                 <li class="page-scroll">
-                    <a href="/users/sign_in">Sign In</a>
+                    <%= render 'devise/menu/login_items' %>
                 </li>
+
             </ul>
         </div>
         <!-- /.navbar-collapse -->
@@ -52,6 +53,7 @@
 </nav>
 
 <div class="content-container">
+
     <%= yield %>
 </div>
 
