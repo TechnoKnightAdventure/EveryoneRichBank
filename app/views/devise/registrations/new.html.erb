@@ -85,12 +85,12 @@ html, body {
 }
 
 .form-box input[type="text"] {
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 5px 5px;
     text-transform: lowercase;
 }
 
 .form-box input[type="password"] {
-    border-radius: 0 0 5px 5px;
+    border-radius: 5px 5px 5px 5px;
     border-top: 0;
 }
 
@@ -140,10 +140,6 @@ html, body {
   -webkit-animation-name: fadeInUp;
   animation-name: fadeInUp;
 }
-.box {
-  padding: 10px;
-}
-
 
 </style>
 
@@ -166,8 +162,8 @@ html, body {
               <%= f.label :password_confirmation %><br />
               <%= f.password_field :password_confirmation, autocomplete: "off", class: "form-control" %>
       </div>
-
-      <button type="submit" class="btn btn-primary">Sign up</button>
+      <br>
+      <button class="btn btn-info btn-block login" type="submit">Sign up</button>
     <% end %>
 
     <%= render "devise/shared/links" %>
