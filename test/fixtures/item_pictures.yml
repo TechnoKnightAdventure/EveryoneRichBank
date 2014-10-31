@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: item_pictures
+#
+#  id         :integer          not null, primary key
+#  pic        :binary
+#  offer_id   :integer
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
 # This model initially had no columns defined.  If you add columns to the
