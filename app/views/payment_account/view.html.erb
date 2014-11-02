@@ -1,0 +1,71 @@
+<div class="container">
+  <h2>Accounts</h2>
+  <% if @accounts.size != 0 %>
+    <ul class="list-group">
+      <% @accounts.each do |account| %>
+        <li class="list-group-item clearfix">
+          <%= form_tag(payment_account_path(account), method: 'delete', class: 'form-inline', role: 'form') do %>
+            <strong>[<%= account.name %>]</strong> <%= account.current_balance %>
+            <ul class="list-inline pull-right">
+              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= account.id %>">
+                Debit/Credit
+              </button>
+              <%= submit_tag("delete", class: 'btn btn-danger') %>
+            </ul>
+          <% end %>
+        </li>
+
+      <% end %>
+    </ul>
+
+    <%= link_to "Create new account...", payment_accounts_path %>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
+    <div class="panel panel-danger">
+      <div class="panel-heading">DANGER ZONE</div>
+      <div class="panel-body">
+        <%= form_tag(payment_accounts_path, method: 'delete', role: 'form') do %>
+          <%= submit_tag("Delete All", class: 'btn btn-danger') %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p>You do not have any accounts</p>
+
+    <%= link_to "Create new account...", payment_accounts_path %>
+  <% end %>
+
+</div>
+
+<% @accounts.each do |account| %>
+  <div class="modal fade" id="myModal<%= account.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title" id="myModalLabel">Account: <%= account.name %></h4>
+        </div>
+        <%= form_tag(payment_account_op_path(account), method: 'post', role: 'form') do %>
+          <div class="modal-body">
+            <div class="form-group">
+              <%= label_tag :op, 'Operation', class: 'control-label'%>
+              <%= select_tag :op, options_for_select([ :debit, :credit], :debit), class: 'form-control' %>
+            </div>
+            <div class="form-group">
+              <%= label_tag :ammount, 'Ammount', class: 'control-label'%>
+              <%= number_field_tag :ammount, nil, class: 'form-control', placeholder: "1.0" %>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <%= submit_tag("Submit", class: 'btn btn-success') %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+  <% end %>

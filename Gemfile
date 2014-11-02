@@ -37,7 +37,8 @@ gem 'spring',        group: :development
 
 # Use debugger
 # gem 'debugger', group: [:development, :test]
-gem 'annotate', '~> 2.6.5'
-
 
 gem 'devise'
+
+gem 'annotate', '~> 2.6.5', :group => :development
+gem 'pry-rails', :group => :development
