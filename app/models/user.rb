@@ -24,6 +24,11 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
+  has_many :payment_account
+
   validates_format_of :email, with: /\A([^@\s]+)@([^@\s]+)\.edu\z/, message: " must be a .edu email"
   
+  def payment_accounts
+    self.payment_account
+  end
 end

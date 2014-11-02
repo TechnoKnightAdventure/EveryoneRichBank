@@ -1,4 +1,11 @@
 Rails.application.routes.draw do
+
+  get 'payment_account/account'
+  post 'payment_account/delete_all'
+  post 'payment_account/create'
+  post 'payment_account/credit'
+  post 'payment_account/debit'
+
   devise_for :users
   post 'api/users.json', to: 'api/registrations#create', defaults: { format: 'json' }
   root to: 'home#index'

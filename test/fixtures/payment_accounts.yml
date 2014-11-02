@@ -1,0 +1,18 @@
+# == Schema Information
+#
+# Table name: payment_accounts
+#
+#  id              :integer          not null, primary key
+#  user_id         :integer
+#  current_balance :decimal(, )
+#  created_at      :datetime
+#  updated_at      :datetime
+#
+
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  current_balance: 9.99
+
+two:
+  current_balance: 9.99
