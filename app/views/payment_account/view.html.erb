@@ -1,30 +1,109 @@
+<style>
+  .em-panel-actions {
+    margin: 0
+  }
+
+  .glyphicon { margin-right:5px; }
+  .thumbnail
+  {
+    margin-bottom: 20px;
+    padding: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius: 0px;
+    border-radius: 0px;
+  }
+
+  .item.list-group-item
+  {
+    float: none;
+    width: 100%;
+    background-color: #fff;
+    margin-bottom: 10px;
+  }
+  .item.list-group-item:nth-of-type(odd):hover,.item.list-group-item:hover
+  {
+    background: #428bca;
+  }
+
+  .item.list-group-item .list-group-image
+  {
+    margin-right: 10px;
+  }
+  .item.list-group-item .thumbnail
+  {
+    margin-bottom: 0px;
+  }
+  .item.list-group-item .caption
+  {
+    padding: 9px 9px 0px 9px;
+  }
+  .item.list-group-item:nth-of-type(odd)
+  {
+    background: #eeeeee;
+  }
+
+  .item.list-group-item:before, .item.list-group-item:after
+  {
+    display: table;
+    content: " ";
+  }
+
+  .item.list-group-item img
+  {
+    float: left;
+  }
+  .item.list-group-item:after
+  {
+    clear: both;
+  }
+  .list-group-item-text
+  {
+    margin: 0 0 11px;
+  }
+</style>
+
 <div class="container">
-  <h2>Accounts</h2>
-  <% if @accounts.size != 0 %>
-    <ul class="list-group">
+  <h4>Accounts:</h4>
+  <div class="well">
+    <div class="clearfix container-fluid">
+    <% if @accounts.size != 0 %>
       <% @accounts.each do |account| %>
-        <li class="list-group-item clearfix">
-          <%= form_tag(payment_account_path(account), method: 'delete', class: 'form-inline', role: 'form') do %>
-            <strong>[<%= account.name %>]</strong> <%= account.current_balance %>
-            <ul class="list-inline pull-right">
-              <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= account.id %>">
-                Debit/Credit
-              </button>
-              <%= submit_tag("delete", class: 'btn btn-danger') %>
-            </ul>
-          <% end %>
-        </li>
-
+        <div class="item col-xs-12 col-md-6 col-lg-6">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <%= account.name %>
+            </div>
+            <div class="panel-body">
+              <strong>Balance:</strong>
+              <%= account.current_balance %>
+            </div>
+            <div class="em-panel-footer panel-footer clearfix">
+              <ul class="em-panel-actions list-inline pull-right">
+                <li>
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal<%= account.id %>" >
+                    Debit/Credit
+                  </button>
+                </li>
+                <li>
+                  <%= form_tag(payment_account_path(account), method: 'delete', class: 'form-inline', role: 'form') do %>
+                    <%= submit_tag("Delete", class: 'btn btn-danger') %>
+                  <% end %>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       <% end %>
-    </ul>
+      </div>
+      <%= link_to "Create new account...", payment_accounts_path %>
+    <% else %>
+      <p>You do not have any accounts</p>
 
-    <%= link_to "Create new account...", payment_accounts_path %>
+      <%= link_to "Create new account...", payment_accounts_path %>
+    <% end %>
+  </div>
 
-    <br/>
-    <br/>
-    <br/>
-    <br/>
-
+  <% if @accounts.size != 0 %>
     <div class="panel panel-danger">
       <div class="panel-heading">DANGER ZONE</div>
       <div class="panel-body">
@@ -33,12 +112,7 @@
         <% end %>
       </div>
     </div>
-  <% else %>
-    <p>You do not have any accounts</p>
-
-    <%= link_to "Create new account...", payment_accounts_path %>
   <% end %>
-
 </div>
 
 <% @accounts.each do |account| %>
