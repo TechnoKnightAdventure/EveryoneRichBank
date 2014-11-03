@@ -9,6 +9,14 @@
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 
   <%= csrf_meta_tags %>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @media only screen and (min-width:768px) and (max-width:991px) {
+      .navbar-nav {
+        font-size: 0.9em;
+      }
+    }
+  </style>
 </head>
 <body>
 
@@ -23,7 +31,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">EveryoneRichBank</a>
+            <a class="navbar-brand" href="/">[ER]Bank</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
