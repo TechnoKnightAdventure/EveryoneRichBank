@@ -75,8 +75,8 @@ hr.star-light {
 }
 
 hr.star-light:after {
-    color: #fff;
-    background-color: #000;
+    color: white;
+    background-color: rgb(51, 51, 51);
 }
 
 hr.star-primary {
@@ -219,7 +219,7 @@ section.success {
 }
 
 section.star-light {
-    color: #000;
+    color: rgba(0,0,0,0);
     background-color: #fff;
 }
 
@@ -484,7 +484,7 @@ footer .footer-below {
 }
 
 .content-container {
-    margin-top: 100px;
+    /* margin-top: 100px; */
 }
 
 
