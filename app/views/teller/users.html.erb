@@ -1,0 +1,238 @@
+<style>
+  .er-panel-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+  .er-fieldset {
+    display: block;
+    margin-left:5px;
+  }
+
+  .er-entry {
+    display: flex;
+    align-items: center;
+  }
+
+  .er-info {
+    float: left;
+    margin-left: 10px;
+  }
+  .er-label {
+    float: left;
+  }
+  .well {
+    padding: 5px;
+    padding-top: 10px;
+  }
+</style>
+
+<script type="text/javascript" charset="utf-8">
+  var app = angular.module("ERBank", [
+    'ui.router',
+    'ngResource',
+    'ui.bootstrap'
+  ]);
+
+  app.config(function($stateProvider, $urlRouterProvider){
+    $urlRouterProvider.otherwise('/');
+
+    $stateProvider
+    // This is the main view where we are going to have a pagination for all users
+    .state('view', { 
+      url: '/',
+      templateUrl: 'userListing.html',
+      controller: UserListingController
+    })
+    .state('view.detail', {
+      url: '^/{userId}',
+      controller: UserDetailController
+
+    });
+
+  });
+
+  // This is an abstraction of our backend service
+  app.service('backend', function($http, $q) {
+    this.getAllUsers = function() {
+      return $q(function(resolve, reject){
+        $http.get('/teller/users.json')
+        .success(function(data) {
+          resolve(data);
+        })
+        .error(function(msg, code) {
+          reject(code + " Error: Could not get users.");
+        })
+      });
+    }
+
+    this.moneyOperationOnUser = function(user_id, op, amount) {
+      return $q(function() {
+        $http.post('/teller/users.json', {user_id: id, operation: op, amount: amount})
+        .success(function(data, status, headers, config) {
+          
+        })
+        .error(function(data, status, headers, config) {
+
+        })
+      });
+    }
+  });
+
+  app.controller('UserViewModalCtrl', function($scope, $modalInstance, user, backend) {
+    $scope.user = user;
+
+    $scope.close = function () {
+      $modalInstance.dismiss('close');
+    };
+  });
+
+  function UserDetailController($rootScope, $state, $stateParams, $scope, $modal, backend, $location) {
+    var displayModalForCurrentId = function() {
+      var user = _.where($scope.users, {id: parseInt($stateParams.userId)})[0];
+      
+      console.log(user);
+
+      if( !(_.isUndefined(user)) ) {
+        var modal = $modal.open({
+          templateUrl: 'userView.html',
+          controller: 'UserViewModalCtrl',
+          size: 'lg',
+          resolve: {
+            user: function() {
+              return user;
+            }
+          }
+        });
+        modal.result.then(function(){}, function() {
+          $scope.$emit('unlockModal');
+          $state.transitionTo('view');
+        });
+      } else {
+        alert("User does not exist");
+        $state.transitionTo('view', {error: "Error: user with id: " + $stateParams.userId + "does not exist."});
+      }
+    }
+
+    _.forEach(['trasitionedToDetailView', 'userListIsReady'], function(event) {
+      $scope.$on(event, function() {
+        if(!$scope.modalLock) {
+          displayModalForCurrentId();
+        }
+      });
+    });
+
+  }
+
+  function UserListingController($rootScope, $state, $stateParams, $scope, $modal, backend) {
+    $scope.refreshUsers = function() {
+      backend.getAllUsers().then(function(data) {
+        $scope.users = data;
+
+        // This is needed if we are heading straight into subview that
+        // Is governed by another controller
+        $scope.$broadcast('userListIsReady');
+      }, function(reason) { alert(reason); });
+    }
+    $scope.refreshUsers();
+
+    $scope.viewUser = function(user) {
+      $state.transitionTo('view.detail', {userId: user.id}).then(function() {
+        $scope.$broadcast('trasitionedToDetailView');
+      });
+    }
+  }
+</script>
+
+<div ng-app="ERBank" >
+
+  <div class="container" ui-view>
+    Loading Application...
+  </div>
+
+  <!-- Listing Template -->
+  <script type="text/ng-template" id="userListing.html">
+    <div ui-view></div>
+    <h2>User Listing:</h2>
+    <div class="well clearfix">
+      <div class="col-sx-12 col-md-6 col-lg-6" ng-repeat="user in users">
+
+        <div class="panel">
+          <div class="er-panel-body">
+
+            <div class="er-fieldset">
+
+              <div class="er-entry clearfix">
+                <div class="er-label label label-primary">Email:</div>
+                <div class="er-info">
+                  {{ user.email }}
+                </div>
+              </div>
+              <div class="er-entry clearfix">
+                <div class="er-label label label-primary">Balance:</div>
+                <div class="er-info">
+                  ${{ user.balance }}
+                </div>
+              </div>
+
+            </div>
+
+            <div class="er-actions">
+              <button type="button" class="btn btn-primary" ng-click="viewUser(user)">View</button>
+            </div>
+
+          </div>
+        </div><!-- End of panel -->
+
+      </div>
+    </div>
+
+  </script>
+
+  <script type="text/ng-template" id="userView.html">
+    <div class="modal-header">
+      <h3 class="modal-title">[{{ user.email }}]</h3>
+    </div>
+    <div class="modal-body">
+      <h4>Payment Accounts:</h4>
+      <div class="well clearfix">
+        <div class="col-sx-12 col-lg-6" ng-repeat="account in user.payment_accounts">
+
+          <div class="panel">
+            <div class="er-panel-body">
+
+              <div class="er-fieldset">
+
+                <div class="er-entry clearfix">
+                  <div class="er-label label label-success">Name:</div>
+                  <div class="er-info">
+                    {{ account.name }}
+                  </div>
+                </div>
+                <div class="er-entry clearfix">
+                  <div class="er-label label label-primary">Balance:</div>
+                  <div class="er-info">
+                    ${{ account.balance }}
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="er-actions">
+                <button type="button" class="btn btn-primary" ng-click="">Debit/Credit</button>
+                <button type="button" class="btn btn-danger" ng-click="">Delete</button>
+              </div>
+
+            </div>
+          </div><!-- End of panel -->
+
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" ng-click="close()">Close</button>
+    </div>
+  </script>
+</div>

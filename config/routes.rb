@@ -38,7 +38,9 @@ Rails.application.routes.draw do
 
   post 'payment_accounts/:id/op' => 'payment_account#money_op', as: :payment_account_op
 
-  devise_for :users
+  get 'teller/users' => 'teller#users'
+
+  devise_for :users, :controllers => { registrations: "er_devise/registrations" }
   post 'api/users.json', to: 'api/registrations#create', defaults: { format: 'json' }
   root to: 'home#index'
 

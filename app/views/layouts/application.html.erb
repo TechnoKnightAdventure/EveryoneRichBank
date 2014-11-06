@@ -4,11 +4,11 @@
   <title>EveryoneRichBank</title>
   <meta charset="utf-8">
 
-  <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
-  <%= stylesheet_link_tag    'bootstrap.min', media: 'all', 'data-turbolinks-track' => true %>
+  <%= stylesheet_link_tag    'application', media: 'all' %>
+  <%# <%= stylesheet_link_tag    'bootstrap.min', media: 'all' %>
 
-  <%= javascript_include_tag 'bootstrap.min', 'data-turbolinks-track' => true %>
-  <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
+  <%# <%= javascript_include_tag 'bootstrap.min' %>
+  <%= javascript_include_tag 'application' %>
 
   <%= csrf_meta_tags %>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,9 +60,15 @@
                     <a href="/#about">About Us</a>
                   </li>
                 <% if user_signed_in? %>
+                  <% if current_user.role == 'teller' %>
+                  <li class="page-scroll">
+                    <%= link_to "Manage Users", teller_users_path %>
+                  </li>
+                  <% else %>
                   <li class="page-scroll">
                     <%= link_to "Payment Accounts", payment_accounts_view_path %>
                   </li>
+                  <% end %>
                 <% end %>
                 <li class="page-scroll">
                   <%= render 'devise/menu/registration_items' %>
