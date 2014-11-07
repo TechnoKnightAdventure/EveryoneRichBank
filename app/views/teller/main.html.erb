@@ -121,7 +121,8 @@
           }
         });
         $scope.modal.result.then(function(){}, function(reason) {
-          if (reason === "close") {
+          console.log(reason)
+          if (reason === "close" || reason === "backdrop click") {
             $state.transitionTo('view'); 
           }
         });
