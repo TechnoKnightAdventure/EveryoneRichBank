@@ -32,6 +32,9 @@
         font-size: 0.9em;
       }
     }
+    .alert {
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -62,7 +65,7 @@
                 <% if user_signed_in? %>
                   <% if current_user.role == 'teller' %>
                   <li class="page-scroll">
-                    <%= link_to "Manage Users", teller_users_path %>
+                    <%= link_to "Manage Users", teller_path %>
                   </li>
                   <% else %>
                   <li class="page-scroll">
@@ -85,7 +88,15 @@
 </nav>
 
 <div class="content-container">
-    <%= yield %>
+  <% if !flash[:alert].blank? %>
+    <div class="container">
+      <div class="alert alert-danger">
+        <%= flash[:alert] %>
+      </div>
+    </div>
+  <% end %>
+
+  <%= yield %>
 </div>
 
 </body>

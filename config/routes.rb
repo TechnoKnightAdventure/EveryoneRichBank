@@ -29,19 +29,23 @@
 
 Rails.application.routes.draw do
 
-  get  'payment_accounts/view' => 'payment_account#view'
-  get  'payment_accounts' => 'payment_account#new'
+  get    'payment_accounts/view'             => 'payment_account#view'
+  get    'payment_accounts'                  => 'payment_account#new'
+  post   'payment_accounts'                  => 'payment_account#create'
+  delete 'payment_accounts/:id'              => 'payment_account#delete'      , as: :payment_account
+  post   'payment_accounts/:id/credit_debit' => 'payment_account#credit_debit', as: :payment_account_op
+  delete 'payment_accounts'                  => 'payment_account#delete_all'
 
-  post   'payment_accounts' => 'payment_account#create'
-  delete 'payment_accounts/:id' => 'payment_account#delete', as: :payment_account
-  delete 'payment_accounts' => 'payment_account#delete_all'
+  get  'teller'            => 'teller#main'
 
-  post 'payment_accounts/:id/op' => 'payment_account#money_op', as: :payment_account_op
-
-  get 'teller/users' => 'teller#users'
+  # Api methods
+  get  'teller/customer/:id'   => 'teller#customer'
+  get  'teller/customers'      => 'teller#list_customers'
 
   devise_for :users, :controllers => { registrations: "er_devise/registrations" }
+  
   post 'api/users.json', to: 'api/registrations#create', defaults: { format: 'json' }
+
   root to: 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

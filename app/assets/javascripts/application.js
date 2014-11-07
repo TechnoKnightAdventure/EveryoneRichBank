@@ -16,6 +16,7 @@
 //= require angular
 //= require angular-resource
 //= require angular-ui-router
+//= require er-backend
 //= require ui-bootstrap
 //= require_tree .
 //
