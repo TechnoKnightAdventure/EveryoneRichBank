@@ -39,7 +39,7 @@
   ]);
 
   app.config(function($stateProvider, $urlRouterProvider){
-    // $urlRouterProvider.otherwise('/');
+    $urlRouterProvider.otherwise('/');
 
     $stateProvider
     // This is the main view where we are going to have a pagination for all users
@@ -49,7 +49,7 @@
       controller: 'UserListingController'
     })
     .state('view.detail', {
-      url: '{id}',
+      url: 'user/{id}',
       controller: 'UserDetailController',
       template: "<div ui-view></div>"
     })
@@ -163,7 +163,8 @@
 <div ng-app="ERBank" >
 
   <div class="container" ui-view>
-    Loading Application...
+    <h1>Page Not Found =[</h1>
+    <h2>Sorry...</h2>
   </div>
 
   <!-- Listing Template -->
