@@ -46,7 +46,7 @@ module.service('$backend', function($http, $q) {
     }
   }
 
-  this.createPaymentAccount = function(accountName) {
+  this.createPaymentAccount = function(userId, accountName) {
     return $q(function(resolve, reject) {
       alert("Not Implemented");
     });

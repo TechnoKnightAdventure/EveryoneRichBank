@@ -46,6 +46,7 @@ Rails.application.routes.draw do
   
   post 'api/users.json', to: 'api/registrations#create', defaults: { format: 'json' }
 
+  get 'about' => 'home#about'
   root to: 'home#index'
 
   # The priority is based upon order of creation: first created -> highest priority.

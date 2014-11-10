@@ -60,8 +60,8 @@
                     <a href="/#page-top"></a>
                 </li>
                 <li class="page-scroll">
-                    <a href="/#about">About Us</a>
-                  </li>
+                  <%= link_to "About Us", about_path %>
+                </li>
                 <% if user_signed_in? %>
                   <% if current_user.role == 'teller' %>
                   <li class="page-scroll">
