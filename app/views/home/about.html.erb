@@ -15,17 +15,40 @@
 <div class="container">
   <div class="row">
     <div class="col-lg-6 col-md-5 col-sm-4">
-      <img class="er-current" src="http://slickzine.com/wp-content/uploads/2012/02/mental-illness.jpg">
+      <script>
+
+        var img_src = [
+            "http://slickzine.com/wp-content/uploads/2012/02/waiting-for-a-chance1.jpg",
+            "http://getrealweird.com/wp-content/uploads/2012/05/homeless-black-and-white-portraits-lee-jeffries-2.jpg",
+            "http://www.drfunkenberry.com/wp-content/uploads/2013/11/princemadison.jpeg"
+          ],
+          names = ["S-Wow tittybang", "Lorde Lorde Lorde", "Micah"],
+          descriptions = [
+            "<p>Getting drunk and punching bitches in the titties</p>",
+            "<p>Yeah yeah yeah. I am lorde. Feelin good on a wednesday.</p>",
+            "<p>I am micah, it is a unique name. Not many people have it, except that one girl.</p>"
+          ],
+          i = 0;
+
+        setInterval(function() {
+          $("#about-img").attr('src', img_src[i]);
+          $("#ihrname").html(names[i]);
+          $("#washastdugemacht").html(descriptions[i]);
+
+          i+=1;
+          if (i >= img_src.length) {
+            i = 0;
+          }
+        }, 8000);
+      </script>
+      <img id="about-img" class="er-current">
     </div>
     <div class="col-lg-6 col-md-7 col-sm-8 er-about">
-      <h1>Oleg Utkin</h1>
-      <p>Schlitz authentic trust fund selvage pork belly, kogi roof party Marfa church-key YOLO small batch 90's Tumblr hashtag. Skateboard tofu Tonx authentic dreamcatcher umami you probably haven't heard of them mumblecore, twee squid actually literally. Fap crucifix Helvetica, swag gluten-free four loko PBR&B street art post-ironic cray narwhal DIY. DIY biodiesel chia whatever 3 wolf moon banjo. Literally lomo iPhone freegan. Chambray taxidermy ugh High Life Bushwick jean shorts, Williamsburg seitan slow-carb cred Odd Future wolf yr. Cornhole fanny pack vegan, Blue Bottle whatever aesthetic church-key Tumblr paleo tote bag.</p>
-      <p>Irony pickled Carles, plaid keytar Tonx swag typewriter authentic next level organic mumblecore food truck drinking vinegar. Polaroid chambray Blue Bottle cardigan, Neutra Portland twee. Flannel slow-carb gastropub messenger bag squid four loko, Kickstarter scenester roof party butcher hoodie put a bird on it 90's Marfa. YOLO tilde Brooklyn umami Tumblr Kickstarter, four loko Truffaut Williamsburg next level 3 wolf moon keytar American Apparel paleo locavore. Health goth freegan irony skateboard. Tilde literally Wes Anderson twee, iPhone cliche letterpress McSweeney's viral Banksy. Gastropub Carles bespoke, Blue Bottle flannel lo-fi narwhal fap.</p>
+      <h1 id="ihrname"></h1>
+      <div id="washastdugemacht">
+      </div>
     </div>
   </div>
 </div>
-<!--<img src="http://slickzine.com/wp-content/uploads/2012/02/waiting-for-a-chance1.jpg" alt="Mountain View" style="width:304px;height:228px">
-<img src="http://getrealweird.com/wp-content/uploads/2012/05/homeless-black-and-white-portraits-lee-jeffries-2.jpg" alt="Mountain View" style="width:304px;height:228px">
-<img src="http://media-cache-ec0.pinimg.com/236x/06/3f/ec/063fec9a3d43e401c1e1031919ebd4fb.jpg" alt="Mountain View" style="width:304px;height:228px">
-<img src="http://www.exposureguide.com/media/2013/10/benoit-4-600x600.jpg" alt="Mountain View" style="width:304px;height:228px">
-<img src="http://exploreeveryday.files.wordpress.com/2013/01/tomatsu_untitled.jpeg" alt="Mountain View" style="width:304px;height:228px">-->
+
+<script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
