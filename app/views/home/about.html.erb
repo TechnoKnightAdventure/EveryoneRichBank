@@ -35,10 +35,7 @@
           $("#ihrname").html(names[i]);
           $("#washastdugemacht").html(descriptions[i]);
 
-          i+=1;
-          if (i >= img_src.length) {
-            i = 0;
-          }
+          i = (i + 1) % img_src.length;
         }, 8000);
       </script>
       <img id="about-img" class="er-current">

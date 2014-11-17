@@ -1,0 +1,107 @@
+// Defining the dependencies on assets
+//= depend_on_asset "customer/main.html"
+//= depend_on_asset "customer/create_account.html"
+//= depend_on_asset "customer/money_transfer.html"
+
+var app = angular.module("ERBank");
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
+  var state = $stateProvider.state
+  state('404', {
+    url: '/404',
+    onEnter: function($window) {
+      $window.location.href = '/404';
+    }
+  });
+  state('view', { 
+    url: '/customer',
+    templateUrl: '<%= asset_path("customer/main.html") %>',
+    controller: 'MainController'
+  });
+  state('create_account', { 
+    url: '/customer/account',
+    templateUrl: '<%= asset_path("customer/create_account.html") %>',
+    controller: 'CreateAccountController'
+  });
+  state('money_transfer', { 
+    url: '/customer/account/:id/transfer',
+    templateUrl: '<%= asset_path("customer/money_transfer.html") %>',
+    controller: 'MoneyTransferController'
+  });
+
+  $('head').append($('<base/>').attr("href","/customer"));
+  $locationProvider.html5Mode({ enabled: true });
+  $urlRouterProvider.otherwise('/404');
+});
+
+app.controller('MainController', function($scope, $rootScope, $backend, $state, dialogs) {
+  $scope.refreshView = function() {
+    $backend.customers.getCurrentCustomer().then(function(customer) {
+      $scope.customer = customer;
+    }, function(reason) {
+      alert(reason);
+    });
+  }
+
+  $scope.delete_account = function(account) {
+    var confirmation = dialogs.confirm("Deleting Account", "Are you sure you want to proceed?");
+    confirmation.result.then(function(btn) {
+      $backend.paymentAccount.delete(account.id).then(function() {
+        $scope.refreshView()
+      }, function(reason) {
+        alert(reason);
+      });
+    });
+  }
+
+  $scope.create_account = function() {
+    $state.transitionTo('create_account');
+  }
+
+  $scope.transfer_money = function(account) {
+    $state.transitionTo('money_transfer', {id: account.id});
+  }
+});
+
+app.controller('CreateAccountController' , function($scope, $rootScope, $backend, $state) {
+  $scope.cancel = function() {
+    $state.transitionTo('view');
+  }
+  $scope.create_account = function() {
+    var name = $scope.account_name;
+    $backend.paymentAccount.create('current', name).then(function() {
+      $state.transitionTo('view');
+    }, function(reason) {
+      alert(reason);
+    });
+  };
+});
+
+app.controller('MoneyTransferController' , function($scope, $rootScope, $backend, $state, $stateParams) {
+  $scope.fromId = $stateParams.id;
+  $scope.accounts = null
+
+  $scope.cancel = function() {
+    $state.transitionTo('view');
+  }
+
+  $scope.refreshAccounts = function() {
+    $backend.paymentAccount.getAccountsForCurrentUser().then(function(accounts) {
+      // Deleting the account from which we are transfering
+      $scope.accounts = _(accounts).filter(function(a) {
+        return a.id != $stateParams.id; 
+      }).__wrapped__;
+      $scope.currentAccount = _.find(accounts, {id: parseInt($scope.fromId)})
+      console.log($scope.currentAccount)
+    }, function(reason) {
+      alert(reason);
+    });
+  }
+
+  $scope.transfer = function() {
+    $backend.paymentAccount.transferMoney($scope.amount, $stateParams.id, $scope.toId).then(function(data) {
+      $state.transitionTo('view');
+    });
+  }
+});
+
+// vim: ft=javascript

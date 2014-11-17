@@ -1,0 +1,17 @@
+.row{"ng-init"=>"refreshView()"}
+  .col-md-4 
+    %h3 {{customer.email}}
+    %button.btn.btn-success{"ng-click" => "create_account()"} Create New Account
+  .col-md-8
+    %h3 Payment Accounts
+    .well
+      .panel.panel-default{"ng-repeat" => "account in customer.payment_accounts | orderBy:'id'"}
+        .panel-heading
+          {{account.name}}
+        .panel-body
+          Balance: {{account.current_balance}}
+        .panel-footer
+          %button.btn.btn-danger{"ng-click" => "delete_account(account)"} Delete
+          %button.btn.btn-primary{"ng-click" => "transfer_money(account)"} Make Transfer
+
+

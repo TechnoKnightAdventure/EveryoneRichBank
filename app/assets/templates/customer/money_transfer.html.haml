@@ -1,0 +1,19 @@
+.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+  .panel.panel-default{"ng-init"=>"refreshAccounts()"}
+    .panel-heading
+      .panel-title Transfer Money
+    .panel-body
+      %form{"role"=>"form"}
+        .well
+          %strong Available Balance:
+          {{currentAccount.current_balance}}
+        .form-group
+          %label{for: "amount"} Ammount
+          %input.form-control{id: "account-name", "ng-model"=>"amount", type: "number"}
+        .form-group
+          %label{for: "account-name"} To Account
+          %select.form-control{"ng-model"=>"toId"}
+            %option{"ng-repeat"=>"account in accounts", value: "{{account.id}}"} {{account.name}}
+
+        %button.btn.btn-success{"ng-click"=>"transfer()"} Transfer
+        %button.btn.btn-dafault{"ng-click"=>"cancel()"} Cancel

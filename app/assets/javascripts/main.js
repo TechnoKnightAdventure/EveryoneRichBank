@@ -1,0 +1,11 @@
+////////////////////////////////////////////////////////////////////////////////
+// Global configuration goes here                                             //
+////////////////////////////////////////////////////////////////////////////////
+var app = angular.module("ERBank", [
+  'ui.router',
+  'ui.bootstrap',
+  'dialogs.main',
+
+  // Defined in er-backend.js in /app/assets/javascripts
+  'er.backend'
+]);

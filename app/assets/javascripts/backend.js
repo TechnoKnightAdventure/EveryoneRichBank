@@ -1,0 +1,118 @@
+/////////////////////////////////////////////////////////////////////////////
+// This is an abstraction of our backend service                           //
+/////////////////////////////////////////////////////////////////////////////
+var module = angular.module('er.backend', []);
+module.service('$backend', function($http, $q) {
+  // User Service encapsulation
+  this.customers = new function() {
+
+    // Named URLS
+    function customers_path()  { return 'api/customers.json'      }
+    function customer_path(id) { return 'api/customers/'+id+'.json'}
+
+    // Get all the users from the teller controller
+    this.getList = function() {
+      return $q(function(resolve, reject){
+
+        $http.get(customers_path())
+        .success(function(data) {
+          resolve(data.customers);
+        })
+        .error(function(msg, code) {
+          reject(code + " Error: Could not get customers.");
+        })
+
+      });
+    }
+    // Get a specific user from the teller controller
+    this.findById = function(id) {
+      return $q(function(resolve, reject) {
+
+        $http.get(customer_path(id))
+        .success(function(data) {
+          resolve(data.customer);
+        })
+        .error(function(msg, code) {
+          reject(code + " Error: Can not get a customer with an ID " + id);
+        });
+      });
+
+    }
+    this.getCurrentCustomer = function() {
+      return this.findById('current');
+    }
+  };
+
+  // Payment Account encapsulation
+  this.paymentAccount = new function() {
+
+    // Named URLS
+    function accounts_path()             { return 'api/payment_accounts/all.json'                   }
+    function account_path(id)            { return 'api/payment_accounts/'+id+'.json'            }
+    function account_transfer_path(id)   { return 'api/payment_accounts/'+id+'/transfer.json'   }
+    function customer_accounts_path(cid) { return 'api/customers/'+cid+'/payment_accounts.json' }
+
+    this.getAccountsForUserId = function(cid) {
+      return $q(function(resolve, reject) {
+        $http.get(customer_accounts_path(cid))
+        .success(function(data) {
+          resolve(data.accounts)
+        })
+        .error(function(msg, code) {
+          reject(code + " Error: Can not get accounts for user with an ID " + id);
+        });
+      });
+    }
+    this.getAccountsForCurrentUser = function() {
+      return this.getAccountsForUserId('current');
+    }
+    this.create = function(userId, accountName) {
+      return $q(function(resolve, reject) {
+
+        $http.post(customer_accounts_path(userId), { name: accountName })
+        .success(function() {
+          resolve();
+        })
+        .error(function(){
+          reject();
+        });
+
+      });
+    }
+    this.delete = function(id) {
+      return $q(function(resolve, reject) {
+        $http.delete(account_path(id))
+        .success(function() {
+          resolve();
+        })
+        .error(function(){
+          reject();
+        });
+      });
+    }
+    this.transferMoney = function(amount, from, to) {
+      return $q(function(resolve, reject) {
+
+        $http.post(account_transfer_path(), {fromId: from, toId: to, amount: amount})
+        .success(function() {
+          resolve();
+        })
+        .error(function(){
+          reject();
+        });
+
+      });
+    }
+    this.moneyOperation = function(user_id, op, amount) {
+      // return $q(function() {
+      //   $http.post('/teller/users.json', {user_id: id, operation: op, amount: amount})
+      //   .success(function(data, status, headers, config) {
+      //     // Things went well
+      //   })
+      //   .error(function(data, status, headers, config) {
+      //     alert("Error: Can not do an operation on the given user.");
+      //   })
+      // });
+    }
+  };
+});

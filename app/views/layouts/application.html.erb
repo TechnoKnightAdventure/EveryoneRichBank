@@ -4,8 +4,9 @@
   <title>EveryoneRichBank</title>
   <meta charset="utf-8">
 
-  <%= stylesheet_link_tag    'application', media: 'all' %>
-  <%# <%= stylesheet_link_tag    'bootstrap.min', media: 'all' %>
+  <%= stylesheet_link_tag 'bootstrap.min', media: 'all' %>
+  <%= stylesheet_link_tag 'dialogs.min', media: 'all' %>
+  <%= stylesheet_link_tag 'application', media: 'all' %>
 
   <%# <%= javascript_include_tag 'bootstrap.min' %>
   <%= javascript_include_tag 'application' %>
@@ -22,7 +23,7 @@
 
 
   <!-- Custom Fonts -->
-  <link href="font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
   <link href="http://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
   <link href="http://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
 
@@ -69,7 +70,7 @@
                   </li>
                   <% else %>
                   <li class="page-scroll">
-                    <%= link_to "Payment Accounts", payment_accounts_view_path %>
+                    <%= link_to "Account", customer_path %>
                   </li>
                   <% end %>
                 <% end %>
@@ -88,15 +89,17 @@
 </nav>
 
 <div class="content-container">
-  <% if !flash[:alert].blank? %>
-    <div class="container">
-      <div class="alert alert-danger">
-        <%= flash[:alert] %>
-      </div>
-    </div>
-  <% end %>
+  <%# <% if !flash[:alert].blank? %>
+  <%#   <div class="container">
+  <%#     <div class="alert alert-danger">
+  <%#       <%= flash[:alert] %>
+  <%#     </div>
+  <%#   </div>
+  <%# <% end %>
 
-  <%= yield %>
+  <div ng-app="ERBank">
+    <%= yield %>
+  </div>
 </div>
 
 </body>

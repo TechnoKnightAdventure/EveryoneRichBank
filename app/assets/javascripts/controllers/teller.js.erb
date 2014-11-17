@@ -1,0 +1,30 @@
+// Defining the dependencies on assets
+//= depend_on_asset "teller/main.html"
+
+var app = angular.module("ERBank");
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
+  var state = $stateProvider.state
+  state('404', {
+    url: '/404',
+    onEnter: function($window) {
+      $window.location.href = '/404';
+    }
+  });
+  state('view', { 
+    url: '/teller',
+    templateUrl: '<%= asset_path("teller/main.html") %>',
+    controller: 'MainController'
+  });
+
+  $('head').append($('<base/>').attr("href","/teller"));
+  $locationProvider.html5Mode({ enabled: true });
+  $urlRouterProvider.otherwise('/404');
+});
+
+app.controller('MainController', function($scope, $backend) {
+  $backend.customers.getList().then(function(customers)  {
+    $scope.customers = customers;
+  })
+});
+
+// vim: ft=javascript

@@ -9,14 +9,16 @@
 //
 // Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
 // about supported directives.
-//
+
+// Requires:
 //= require lodash.min
 //= require jquery
 //= require jquery_ujs
 //= require angular
 //= require angular-resource
+//= require angular-sanitize
 //= require angular-ui-router
-//= require er-backend
 //= require ui-bootstrap
-//= require_tree .
-//
+//= require dialogs.min
+//= require backend
+//= require main
