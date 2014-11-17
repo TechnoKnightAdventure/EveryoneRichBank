@@ -8,7 +8,7 @@ class Api::PaymentAccountsController < Api::ApiResource
       deny_access! unless params[:customer_id] == 'current'
       accounts = current_user.payment_accounts
     else
-      accounts = PaymentAccount.where(user_id: params[:user_id])
+      accounts = PaymentAccount.where(user_id: params[:customer_id])
     end
 
     _render({

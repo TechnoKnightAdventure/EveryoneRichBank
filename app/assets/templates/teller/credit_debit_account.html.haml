@@ -9,7 +9,7 @@
       %form{"role"=>"form"}
         .form-group
           %label{for: "amount"} Amount
-          %input.form-control{id: "amount", "ng-model"=>"amount"}
+          %input.form-control{id: "amount", type: "number", step: "any", "ng-model"=>"amount"}
         .form-group
           %label{for: "op"} Operation
           %select.form-control{id: "op", "ng-model"=>"op"}

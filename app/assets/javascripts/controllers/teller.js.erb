@@ -32,6 +32,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
     templateUrl: '<%= asset_path("teller/credit_debit_account.html") %>',
     controller: 'CreditDebitController'
   });
+  state('money_transfer', {
+    url: '/teller/customer/:id/account/:aid/money-transfer',
+    templateUrl: '<%= asset_path("teller/money_transfer.html") %>',
+    controller: 'MoneyTransferController'
+  });
 
   $('head').append($('<base/>').attr("href","/teller"));
   $locationProvider.html5Mode({ enabled: true });
@@ -51,7 +56,7 @@ app.controller('MainController', function($scope, $state, $backend) {
   }
 });
 
-app.controller('CustomerController', function($scope, $state, $backend, $stateParams) {
+app.controller('CustomerController', function($scope, $state, $backend, $stateParams, dialogs) {
   $scope.refreshUser = function() {
     $backend.customers.findById($stateParams.id)
     .then(function(customer) {
@@ -59,6 +64,17 @@ app.controller('CustomerController', function($scope, $state, $backend, $statePa
     }, function(reason) {
       alert(reason);
     })
+  }
+
+  $scope.delete_account = function(account) {
+    var confirmation = dialogs.confirm("Deleting Account", "Are you sure you want to proceed?");
+    confirmation.result.then(function(btn) {
+      $backend.paymentAccount.delete(account.id).then(function() {
+        $scope.refreshUser();
+      }, function(reason) {
+        alert(reason);
+      });
+    });
   }
 
   $scope.create_account = function() {
@@ -71,6 +87,10 @@ app.controller('CustomerController', function($scope, $state, $backend, $statePa
 
   $scope.credit_debit = function(account) {
     $state.transitionTo('credit_debit_account', {id: $stateParams.id, aid: account.id});
+  }
+
+  $scope.transfer = function(account) {
+    $state.transitionTo('money_transfer', {id: $stateParams.id, aid: account.id});
   }
 })
 
@@ -108,6 +128,58 @@ app.controller('CreditDebitController', function($scope, $state, $backend, $stat
       alert(reason);
     })
   }
+
+
+  $scope.cancel = function() {
+    $state.transitionTo('customer_detail', {id: $stateParams.id});
+  }
+});
+
+app.controller('MoneyTransferController', function($scope, $state, $backend, $stateParams) {
+  $scope.fromId = $stateParams.aid;
+
+  $scope.refreshUsers = function() {
+    $backend.customers.getList()
+    .then(function(customers)  {
+      $scope.customers = customers;
+    })
+  }
+
+  $scope.refreshAccount = function() {
+    $backend.paymentAccount.getAccountById($stateParams.aid)
+    .then(function(account) {
+      $scope.account = account;
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.refreshDestination = function() {
+    $backend.paymentAccount.getAccountsForUserId($scope.toUserId)
+    .then(function(accounts) {
+      $scope.destinations = accounts;
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.refreshView = function() {
+    $scope.refreshAccount();
+    $scope.refreshUsers();
+  }
+
+  $scope.transfer = function() {
+    $backend.paymentAccount.transferMoney($scope.amount, $scope.fromId, $scope.toId)
+    .then(function() {
+      $state.transitionTo('customer_detail', {id: $stateParams.id});
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.$watch('toUserId', function(newValue, oldValue) {
+    $scope.refreshDestination();
+  });
 
   $scope.cancel = function() {
     $state.transitionTo('customer_detail', {id: $stateParams.id});
