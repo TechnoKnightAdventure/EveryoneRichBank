@@ -77,6 +77,38 @@ class Api::PaymentAccountsController < Api::ApiResource
     })
   end
 
+  def show
+    raise ArgumentError, 'Id is missing' if params[:id].nil?
+
+    account = PaymentAccount.find(params[:id])
+
+    _render({
+      account: account.as_json(
+        only: [:id, :current_balance, :name]
+      )
+    })
+  end
+
+
+  def credit_debit 
+    raise ArgumentError, 'Id is missing' if params[:id].nil?
+    raise ArgumentError, 'Operation is missing' if params[:operation].nil?
+    raise ArgumentError, 'Amount is missing' if params[:amount].nil?
+
+    account = PaymentAccount.find(params[:id])
+    if params[:operation] == 'credit'
+      account.current_balance += params[:amount].to_f
+      account.save
+    elsif params[:operation] == 'debit' 
+      account.current_balance -= params[:amount].to_f
+      account.save
+    end
+    
+    _render({
+      outcome: "positive"
+    })
+  end
+
   protected
 
   def check_access!

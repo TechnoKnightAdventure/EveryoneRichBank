@@ -1,0 +1,20 @@
+.col-md-6.col-md-offset-3.col-sm-8.col-sm-offset-2
+  .panel.panel-default{"ng-init"=>"refreshAccount()"}
+    .panel-heading
+      .panel-title Credit/Debit
+    .panel-body
+      .well
+        %strong Current Balance:
+        {{account.current_balance}}
+      %form{"role"=>"form"}
+        .form-group
+          %label{for: "amount"} Amount
+          %input.form-control{id: "amount", "ng-model"=>"amount"}
+        .form-group
+          %label{for: "op"} Operation
+          %select.form-control{id: "op", "ng-model"=>"op"}
+            %option{value: "credit", selected: ''} Credit
+            %option{value: "debit"} Debit
+
+        %button.btn.btn-success{"ng-click"=>"do_operation()"} Create Account
+        %button.btn.btn-dafault{"ng-click"=>"cancel()"} Cancel

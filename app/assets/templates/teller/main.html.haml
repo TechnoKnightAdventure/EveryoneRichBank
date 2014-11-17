@@ -1,5 +1,8 @@
-.well
+%h3 User Listing
+.well{"ng-init"=>"refreshView()"}
   .panel.panel-default{"ng-repeat" => "customer in customers"}
     .panel-body.clearfix
       %strong Email:
       {{customer.email}}
+      .pull-right
+        %button.btn.btn-primary{"ng-click"=>"view_customer(customer)"} View

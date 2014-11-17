@@ -1,5 +1,7 @@
 // Defining the dependencies on assets
 //= depend_on_asset "teller/main.html"
+//= depend_on_asset "teller/customer_detail.html"
+//= depend_on_asset "teller/create_account.html"
 
 var app = angular.module("ERBank");
 app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
@@ -15,16 +17,100 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
     templateUrl: '<%= asset_path("teller/main.html") %>',
     controller: 'MainController'
   });
+  state('customer_detail', {
+    url: '/teller/customer/:id',
+    templateUrl: '<%= asset_path("teller/customer_detail.html") %>',
+    controller: 'CustomerController'
+  });
+  state('create_account', {
+    url: '/teller/customer/:id/create',
+    templateUrl: '<%= asset_path("teller/create_account.html") %>',
+    controller: 'CreateAccountController'
+  });
+  state('credit_debit_account', {
+    url: '/teller/customer/:id/account/:aid/credit-debit',
+    templateUrl: '<%= asset_path("teller/credit_debit_account.html") %>',
+    controller: 'CreditDebitController'
+  });
 
   $('head').append($('<base/>').attr("href","/teller"));
   $locationProvider.html5Mode({ enabled: true });
   $urlRouterProvider.otherwise('/404');
 });
 
-app.controller('MainController', function($scope, $backend) {
-  $backend.customers.getList().then(function(customers)  {
-    $scope.customers = customers;
-  })
+app.controller('MainController', function($scope, $state, $backend) {
+  $scope.refreshView = function() {
+    $backend.customers.getList()
+    .then(function(customers)  {
+      $scope.customers = customers;
+    })
+  }
+
+  $scope.view_customer = function(customer) {
+    $state.transitionTo('customer_detail', {id: customer.id})
+  }
 });
 
+app.controller('CustomerController', function($scope, $state, $backend, $stateParams) {
+  $scope.refreshUser = function() {
+    $backend.customers.findById($stateParams.id)
+    .then(function(customer) {
+      $scope.customer = customer;
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.create_account = function() {
+    $state.transitionTo('create_account', {id: $stateParams.id});
+  }
+
+  $scope.cancel = function() {
+    $state.transitionTo('view');
+  }
+
+  $scope.credit_debit = function(account) {
+    $state.transitionTo('credit_debit_account', {id: $stateParams.id, aid: account.id});
+  }
+})
+
+app.controller('CreateAccountController', function($scope, $state, $backend, $stateParams) {
+   $scope.create_account = function() {
+     $backend.paymentAccount.create($stateParams.id, $scope.account_name)
+     .then(function(data) {
+       $state.transitionTo('customer_detail', {id: $stateParams.id});
+     }, function(reason) {
+       alert(reason);
+     });
+   }
+
+   $scope.cancel = function() {
+     $state.transitionTo('customer_detail', {id: $stateParams.id});
+   }
+});
+
+
+app.controller('CreditDebitController', function($scope, $state, $backend, $stateParams) {
+  $scope.refreshAccount = function() {
+    $backend.paymentAccount.getAccountById($stateParams.aid)
+    .then(function(account) {
+      $scope.account = account;
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.do_operation = function() {
+    $backend.paymentAccount.moneyOperation($stateParams.aid, $scope.op, $scope.amount)
+    .then(function() {
+      $state.transitionTo('customer_detail', {id: $stateParams.id});
+    }, function(reason) {
+      alert(reason);
+    })
+  }
+
+  $scope.cancel = function() {
+    $state.transitionTo('customer_detail', {id: $stateParams.id});
+  }
+});
 // vim: ft=javascript

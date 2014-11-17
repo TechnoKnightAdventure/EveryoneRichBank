@@ -1,0 +1,15 @@
+%pre {{customer}}
+%h3{"ng-init"=>"refreshUser()"} {{customer.email}}
+%h3 Payment Accounts
+.well
+  .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts"}
+    .panel-heading {{account.name}}
+    .panel-body 
+      {{account.current_balance}}
+      .pull-right
+        %button.btn.btn-primary{"ng-click"=>"credit_debit(account)"} Credit/Debit
+
+%button.btn.btn-success{"ng-click"=>"create_account()"} Create An Account
+%button.btn.btn-default{"ng-click"=>"cancel()"} Back To Listing
+
+%br

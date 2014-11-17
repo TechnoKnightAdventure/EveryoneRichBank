@@ -47,13 +47,15 @@ module.service('$backend', function($http, $q) {
   this.paymentAccount = new function() {
 
     // Named URLS
-    function accounts_path()             { return 'api/payment_accounts/all.json'                   }
-    function account_path(id)            { return 'api/payment_accounts/'+id+'.json'            }
-    function account_transfer_path(id)   { return 'api/payment_accounts/'+id+'/transfer.json'   }
-    function customer_accounts_path(cid) { return 'api/customers/'+cid+'/payment_accounts.json' }
+    function accounts_path()               { return 'api/payment_accounts/all.json'               }
+    function account_path(id)              { return 'api/payment_accounts/'+id+'.json'            }
+    function account_transfer_path(id)     { return 'api/payment_accounts/'+id+'/transfer.json'   }
+    function account_credit_debit_path(id) { return 'api/payment_accounts/'+id+'/credit-debit.json'   }
+    function customer_accounts_path(cid)   { return 'api/customers/'+cid+'/payment_accounts.json' }
 
     this.getAccountsForUserId = function(cid) {
       return $q(function(resolve, reject) {
+
         $http.get(customer_accounts_path(cid))
         .success(function(data) {
           resolve(data.accounts)
@@ -61,10 +63,25 @@ module.service('$backend', function($http, $q) {
         .error(function(msg, code) {
           reject(code + " Error: Can not get accounts for user with an ID " + id);
         });
+
       });
     }
     this.getAccountsForCurrentUser = function() {
       return this.getAccountsForUserId('current');
+    }
+    this.getAccountById = function(id) {
+      return $q(function(resolve, reject) {
+
+        $http.get(account_path(id))
+        .success(function(data) {
+          resolve(data.account);
+        })
+        .error(function() {
+          reject(code + " Error: Can not get account with an ID " + id);
+        });
+        
+      });
+
     }
     this.create = function(userId, accountName) {
       return $q(function(resolve, reject) {
@@ -103,16 +120,16 @@ module.service('$backend', function($http, $q) {
 
       });
     }
-    this.moneyOperation = function(user_id, op, amount) {
-      // return $q(function() {
-      //   $http.post('/teller/users.json', {user_id: id, operation: op, amount: amount})
-      //   .success(function(data, status, headers, config) {
-      //     // Things went well
-      //   })
-      //   .error(function(data, status, headers, config) {
-      //     alert("Error: Can not do an operation on the given user.");
-      //   })
-      // });
+    this.moneyOperation = function(account_id, op, amount) {
+      return $q(function(resolve, reject) {
+        $http.post(account_credit_debit_path(account_id), {operation: op, amount: amount})
+        .success(function(data, status, headers, config) {
+          resolve();
+        })
+        .error(function(data, status, headers, config) {
+          reject("Error: Can not do an operation on the given user.");
+        })
+      });
     }
   };
 });
