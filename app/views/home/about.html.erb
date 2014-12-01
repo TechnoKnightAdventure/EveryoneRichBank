@@ -18,17 +18,63 @@
       <script>
 
         var img_src = [
-            "http://slickzine.com/wp-content/uploads/2012/02/waiting-for-a-chance1.jpg",
-            "http://getrealweird.com/wp-content/uploads/2012/05/homeless-black-and-white-portraits-lee-jeffries-2.jpg",
-            "http://www.drfunkenberry.com/wp-content/uploads/2013/11/princemadison.jpeg"
+            "http://i.imgur.com/grvZQiq.jpg", // oleg
+            "", // brandon
+            "http://i.imgur.com/yAsU8DR.jpg", // micah
+            "http://i.imgur.com/KlPsrKm.jpg", // pauline
+            "http://www.meh.ro/wp-content/uploads/2010/11/meh.ro5855.jpg", // seth
+            "", // terrence
+            "http://i.imgur.com/HpRt2yG.jpg", // sean
+            "http://www.drfunkenberry.com/wp-content/uploads/2013/11/princemadison.jpeg", // kyle
+            "", // dan
+            "http://slickzine.com/wp-content/uploads/2012/02/waiting-for-a-chance1.jpg" // wingo
           ],
-          names = ["S-Wow tittybang", "Lorde Lorde Lorde", "Micah"],
+          names = [
+            "Oleg Utkin",
+            "Brandon 'Beef or Chicken' Rahman",
+            "Micah Rothenbuhler",
+            "Pauline 'Win-Win' Nguyen",
+            "Seth Horowitz",
+            "Terrence Loc",
+            "Sean 'Don' Gref",
+            "Kyle Enfield",
+            "Dan 'always can' Liu",
+            "Wingo [Chicken Wingo]",
+          ],
           descriptions = [
-            "<p>Getting drunk and punching bitches in the titties</p>",
-            "<p>Yeah yeah yeah. I am lorde. Feelin good on a wednesday.</p>",
-            "<p>I am micah, it is a unique name. Not many people have it, except that one girl.</p>"
+            "<p>Agile wizard. The coder who codes. Trained in the arts of git and ruby, " +
+              "allowing him the title of The Gitninja, or The Rubyninja. Loves vim. A lot.<p>",
+            "<p>Stuck in a world of sorrow and death, Brandon comes out of the ashes to " +
+              "lead the team. He isn't the leader the team wants, but he is the leader the" +
+              " team needs.</p>",
+            "<p>I am micah, it is a unique name. Not many people have it, except that one girl."+
+              "<br>Yeah yeah yeah. I am lorde. Feelin good on a wednesday." +
+              "<br>Was once the manager of a Wendys. Diamond 5 League of Legends enthusiast.</p>",
+            "<p>I am Pauline. I like cats.</p>",
+            "<p>His code debugs itself, out of respect. His doubles never have rounding errors. " +
+              "When his code segfaults, it apologizes to him. He is, the most interesting coder in " +
+              "the world. Keep hacking my friends.</p>",
+            "<p>Part student. Part programmer. All engineer.</p>",
+            "<p> I’ve climbed Mt. Everest. I’ve traded philosophies on religion with the Dali" +
+              " Lama, the Pope, and Paul McCartney of the Beatles. Last summer during a backward" +
+              " walking trip through our nation’s capital, I simultaneously happened across the" +
+              " meaning of life and the greatest recipe for fried chicken the world has ever tasted." +
+              " Last year on a rainy October afternoon, I counted to infinity.<br>" +
+              "Monday evenings, I perform bodywork repairs on the taxicabs of New York City. " +
+              "I spend Tuesday afternoons learning to classify ancient Sumerian sculptures and " +
+              "pottery, while I pass the time on Wednesday’s volunteering at the local hospital" +
+              " as an amateur neurosurgeon. I reserve Thursday nights for lawn bowling with the " +
+              "geriatric community of North Williamsburg. Friday’s are my nights out, when I either" +
+              " perfect my longbow skills by shooting arrows over the Hudson, or lately, " +
+              "replace the teak decking on my yacht. <br>" +
+              "And now -- I am a tester for Techno Kitty Adventure. </p>",
+            "<p>Kyle bit my finger</p>",
+            "<p>I'm dan. I enjoy long walks on the beach and watching paint dry. I also " +
+              "enjoy testing programs for fun. Testing gives me so much joy that I could do it all day. </p>",
+            "<p>New Zealand is better than Australia.</p>"
           ],
-          i = 0;
+          i = Math.floor(Math.random() * 10),
+          interval = 8000;
 
         setInterval(function() {
           $("#about-img").attr('src', img_src[i]);
@@ -36,7 +82,7 @@
           $("#washastdugemacht").html(descriptions[i]);
 
           i = (i + 1) % img_src.length;
-        }, 8000);
+        }, interval);
       </script>
       <img id="about-img" class="er-current">
     </div>
