@@ -6,7 +6,7 @@
       %form{"role"=>"form"}
         .well
           %strong Available Balance:
-          {{account.current_balance}}
+          ${{account.current_balance | number : 2}}
         .form-group
           %label{for: "amount"} Amount
           %input.form-control{id: "account-name", "ng-model"=>"amount", step: "any", type: "number"}

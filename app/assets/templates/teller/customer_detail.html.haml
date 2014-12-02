@@ -5,7 +5,7 @@
   .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts"}
     .panel-heading {{account.name}}
     .panel-body 
-      {{account.current_balance}}
+      ${{account.current_balance | number : 2}}
       .pull-right
         %button.btn.btn-danger{"ng-click"=>"delete_account(account)"} Delete
         %button.btn.btn-primary{"ng-click"=>"transfer(account)"} Transfer

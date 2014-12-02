@@ -5,7 +5,7 @@
     .panel-body
       .well
         %strong Current Balance:
-        {{account.current_balance}}
+        ${{account.current_balance | number : 2}}
       %form{"role"=>"form"}
         .form-group
           %label{for: "amount"} Amount
