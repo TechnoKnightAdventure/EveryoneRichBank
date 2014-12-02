@@ -12,5 +12,6 @@
 #  updated_at         :datetime
 #
 
-class Transaction < ActiveRecord::Base
+class TransactionLog < ActiveRecord::Base
+  belongs_to :payment_account
 end

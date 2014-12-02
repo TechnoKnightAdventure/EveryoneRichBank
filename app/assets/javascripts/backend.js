@@ -127,7 +127,7 @@ module.service('$backend', function($http, $q) {
           resolve();
         })
         .error(function(data, status, headers, config) {
-          reject("Error: Can not do an operation on the given user.");
+          reject(data.error);
         })
       });
     }

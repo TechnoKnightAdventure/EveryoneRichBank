@@ -19,20 +19,22 @@ class Api::PaymentAccountsController < Api::ApiResource
   end
 
   def transfer
-    raise ArgumentError, "Amount is missing" if params[:amount].nil?
-    amount = params[:amount].to_f
-    raise ArgumentError, "Source is missing" if params[:fromId].nil?
-    sourceAccount = PaymentAccount.find(params[:fromId]);
-    raise ArgumentError, "Destination is missing" if params[:toId].nil?
-    destinationAccount = PaymentAccount.find(params[:toId]);
+    raise ArgumentError, "Amount is missing"                 if params[:amount].nil?
+    raise ArgumentError, "Source Account id is missing"      if params[:fromId].nil?
+    raise ArgumentError, "Destination Account id is missing" if params[:toId].nil?
 
-    raise ArgumentError, "Insuffucient funds" if sourceAccount.current_balance < amount
+    begin
+      sourceAccount      = PaymentAccount.find(params[:fromId]);
+      destinationAccount = PaymentAccount.find(params[:toId]);
+    rescue ActiveRecord::RecordNotFound => e
+      logger.fatal("Can not find record '#{e.message}'")
+      raise_app_error!
+    end
     
-    sourceAccount.current_balance -= amount
-    destinationAccount.current_balance += amount
+    amount = params[:amount].to_f
 
-    sourceAccount.save
-    destinationAccount.save
+    sourceAccount.debit(amount)
+    destinationAccount.credit(amount)
 
     _render({
       outcome: "positive"
@@ -49,6 +51,7 @@ class Api::PaymentAccountsController < Api::ApiResource
 
   def create
     raise ArgumentError, "Name missing" if params[:name].nil?
+
     customer = nil
     if current_user.role == "customer" && params[:customer_id] == 'current'
       customer = current_user
@@ -69,7 +72,6 @@ class Api::PaymentAccountsController < Api::ApiResource
     raise ArgumentError, "Id missing" if params[:id].nil?
 
     account = PaymentAccount.find(params[:id])
-
     account.delete
 
     _render({
@@ -96,12 +98,10 @@ class Api::PaymentAccountsController < Api::ApiResource
     raise ArgumentError, 'Amount is missing' if params[:amount].nil?
 
     account = PaymentAccount.find(params[:id])
-    if params[:operation] == 'credit'
-      account.current_balance += params[:amount].to_f
-      account.save
-    elsif params[:operation] == 'debit' 
-      account.current_balance -= params[:amount].to_f
-      account.save
+    if params[:operation].to_sym == :credit
+      account.credit(current_user, params[:amount].to_f)
+    elsif params[:operation].to_sym == :debit
+      account.debit(current_user, params[:amount].to_f)
     end
     
     _render({

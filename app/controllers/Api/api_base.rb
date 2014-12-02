@@ -1,11 +1,15 @@
 class Api::ApiBase < ApplicationController
   protected
   
-  class NoAccess < Exception
-  end
+  class NoAccess < Exception; end
+  class AppError < Exception; end
 
   def deny_access!
     raise NoAccess
+  end
+
+  def raise_app_error!
+    raise AppError
   end
   
   def _render(json, success: true, status: 200)
@@ -29,21 +33,21 @@ class Api::ApiBase < ApplicationController
 
   rescue_from Exception do |exception|
     json = {}
-    json[:error] = exception.message
+    json[:error] = "Exception: #{self.class.name}##{action_name} #{exception.message}"
     _render json, success: false, status: 500
   end
 
 
   rescue_from RuntimeError do |exception|
     json = {}
-    json[:error] = exception.message
+    json[:error] = "RuntimeError: #{self.class.name}##{action_name} #{exception.message}"
     _render json, success: false, status: 500
   end
 
 
   rescue_from ArgumentError do |exception|
     json = {}
-    json[:error] = exception.message
+    json[:error] = "ArgumentError: #{self.class.name}##{action_name} #{exception.message}"
     _render json, success: false, status: 406
   end
 
@@ -57,6 +61,11 @@ class Api::ApiBase < ApplicationController
   rescue_from Api::ApiBase::NoAccess do |exception|
     json = { error: "Error: Access not granted." }
     _render json, status: 403, success: false 
+  end
+
+  rescue_from Api::ApiBase::AppError do |exception|
+    json = { error: "OOps! Something went wrong internally." }
+    _render json, status: 500, success: false 
   end
 end
 

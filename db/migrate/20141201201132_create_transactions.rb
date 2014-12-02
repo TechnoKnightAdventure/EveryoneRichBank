@@ -5,7 +5,7 @@ class CreateTransactions < ActiveRecord::Migration
 
       t.integer  :actor_id
       t.string   :description
-      t.string   :type
+      t.string   :trans_type
       t.decimal  :amount
 
       t.timestamps
