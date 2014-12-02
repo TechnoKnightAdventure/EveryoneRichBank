@@ -33,8 +33,8 @@ class Api::PaymentAccountsController < Api::ApiResource
     
     amount = params[:amount].to_f
 
-    sourceAccount.debit(amount)
-    destinationAccount.credit(amount)
+    sourceAccount.debit(current_user, amount)
+    destinationAccount.credit(current_user, amount)
 
     _render({
       outcome: "positive"

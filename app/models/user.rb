@@ -32,4 +32,8 @@ class User < ActiveRecord::Base
   def payment_accounts
     self.payment_account
   end
+
+  def make_teller
+    self.role = "teller"
+  end
 end
