@@ -26,6 +26,7 @@ Rails.application.routes.draw do
         resources :payment_accounts, shallow: true do
           post 'transfer', on: :member
           post 'credit-debit', on: :member
+          resources :transactions, shallow: true
         end
       end
     end

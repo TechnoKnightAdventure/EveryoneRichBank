@@ -1,6 +1,6 @@
 class Api::PaymentAccountsController < Api::ApiResource
   skip_before_action :verify_authenticity_token
-  before_filter :check_access!, except: [:index, :transfer, :create, :destroy]
+  before_filter :check_access!, except: [:index, :transfer, :create, :destroy, :show]
 
   def index
     accounts = nil
@@ -82,7 +82,13 @@ class Api::PaymentAccountsController < Api::ApiResource
   def show
     raise ArgumentError, 'Id is missing' if params[:id].nil?
 
-    account = PaymentAccount.find(params[:id])
+    account = nil
+    if current_user.role == 'customer'
+      # search in current user and if search fails deny access
+      account = current_user.payment_account.find(params[:id])
+    else
+      account = PaymentAccount.find(params[:id])
+    end
 
     _render({
       account: account.as_json(

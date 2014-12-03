@@ -76,7 +76,7 @@ module.service('$backend', function($http, $q) {
         .success(function(data) {
           resolve(data.account);
         })
-        .error(function() {
+        .error(function(msg, code) {
           reject(code + " Error: Can not get account with an ID " + id);
         });
         
@@ -90,8 +90,8 @@ module.service('$backend', function($http, $q) {
         .success(function() {
           resolve();
         })
-        .error(function(){
-          reject();
+        .error(function(msg, code){
+          reject(code + " Error: Can not create account for user [" + userId + "]");
         });
 
       });
@@ -102,8 +102,8 @@ module.service('$backend', function($http, $q) {
         .success(function() {
           resolve();
         })
-        .error(function(){
-          reject();
+        .error(function(msg, code){
+          reject(code + " Error: Can not delete account [" + id + "]");
         });
       });
     }
@@ -114,8 +114,8 @@ module.service('$backend', function($http, $q) {
         .success(function() {
           resolve();
         })
-        .error(function(){
-          reject();
+        .error(function(msg, code){
+          reject(code + " Error: Can not transfer money for accounts [" + from + "]->[" + to + "]");
         });
 
       });
@@ -128,6 +128,23 @@ module.service('$backend', function($http, $q) {
         })
         .error(function(data, status, headers, config) {
           reject(data.error);
+        })
+      });
+    }
+  };
+
+  this.transactions = new function() {
+    function payment_account_transaction_path(id) { return 'api/payment_accounts/'+id+'/transactions.json'   }
+
+    this.getTransactionsForPaymentAccountId = function(id) {
+      return $q(function(resolve, reject) {
+
+        $http.get(payment_account_transaction_path(id))
+        .success(function(data) {
+          resolve(data.transactions)
+        })
+        .error(function(msg, code) {
+          reject(code + "Error: Can not list transactions for account [" + id + "]" + msg);
         })
       });
     }
