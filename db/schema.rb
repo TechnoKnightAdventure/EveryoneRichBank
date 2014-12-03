@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20141202052452) do
     t.integer  "payment_account_id"
     t.integer  "actor_id"
     t.string   "description"
-    t.string   "trans_type"
+    t.string   "type"
     t.decimal  "amount"
     t.datetime "created_at"
     t.datetime "updated_at"
