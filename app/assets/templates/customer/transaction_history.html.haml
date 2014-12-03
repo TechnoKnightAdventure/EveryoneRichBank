@@ -1,0 +1,22 @@
+.col-md-10.col-md-offset-1
+  .panel.panel-default{"ng-init"=>"refreshView()"}
+    .panel-heading
+      .panel-title 
+        Transaction History for 
+        %strong [{{account.name}}]
+    .panel-body
+      %h4{"ng-if"=>"logitems.length == 0"}
+        You dont have any transactions yet
+      %table.table.table-striped{"ng-if"=>"logitems.length != 0"}
+        %tr
+          %th Amount
+          %th Name
+          %th Type
+          %th Date
+        %tr{"ng-repeat"=>"logitem in logitems"}
+          %td ${{logitem.amount | number:2}}
+          %td {{logitem.description}}
+          %td {{logitem.trans_type}}
+          %td {{logitem.updated_at}}
+    .panel-footer
+      .btn.btn-default{"ng-click"=>"back()"} Back
