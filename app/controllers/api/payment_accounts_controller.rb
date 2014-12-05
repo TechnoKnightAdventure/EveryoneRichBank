@@ -33,12 +33,14 @@ class Api::PaymentAccountsController < Api::ApiResource
     
     amount = params[:amount].to_f
 
-    if current_user.payment_account.include?(destinationAccount)
+    if destinationAccount.user_id == sourceAccount.user_id
       sourceAccount.debit(current_user, amount, "Transfer to \"#{destinationAccount.name}\"")
       destinationAccount.credit(current_user, amount, "Transfer from \"#{sourceAccount.name}\"")
     else
-      sourceAccount.debit(current_user, amount, "Transfer to other customer")
-      destinationAccount.credit(current_user, amount, "Transfer from other customer")
+      sourceUser = User.find(sourceAccount.user_id)
+      destinationUser = User.find(destinationAccount.user_id)
+      sourceAccount.debit(current_user, amount, "Transfer to #{destinationUser.email}")
+      destinationAccount.credit(current_user, amount, "Transfer from #{sourceUser.email}")
     end
       
 
