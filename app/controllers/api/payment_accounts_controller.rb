@@ -33,8 +33,14 @@ class Api::PaymentAccountsController < Api::ApiResource
     
     amount = params[:amount].to_f
 
-    sourceAccount.debit(current_user, amount)
-    destinationAccount.credit(current_user, amount)
+    if current_user.payment_account.include?(destinationAccount)
+      sourceAccount.debit(current_user, amount, "Transfer to \"#{destinationAccount.name}\"")
+      destinationAccount.credit(current_user, amount, "Transfer from \"#{sourceAccount.name}\"")
+    else
+      sourceAccount.debit(current_user, amount, "Transfer to other customer")
+      destinationAccount.credit(current_user, amount, "Transfer from other customer")
+    end
+      
 
     _render({
       outcome: "positive"
@@ -105,9 +111,9 @@ class Api::PaymentAccountsController < Api::ApiResource
 
     account = PaymentAccount.find(params[:id])
     if params[:operation].to_sym == :credit
-      account.credit(current_user, params[:amount].to_f)
+      account.credit(current_user, params[:amount].to_f, "Money was deposited")
     elsif params[:operation].to_sym == :debit
-      account.debit(current_user, params[:amount].to_f)
+      account.debit(current_user, params[:amount].to_f, "Money was withdrawn")
     end
     
     _render({

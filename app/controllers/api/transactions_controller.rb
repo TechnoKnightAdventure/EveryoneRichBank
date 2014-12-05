@@ -13,7 +13,7 @@ class Api::TransactionsController < Api::ApiResource
       account      = customer.payment_account.find(params[:payment_account_id])
       transactions = account.transaction_log.all
     rescue Exception => e
-      logger.fatal("Can not ger transaction '#{e.message}'")
+      logger.fatal("Can not get transaction '#{e.message}'")
       raise_app_error!
     end
 

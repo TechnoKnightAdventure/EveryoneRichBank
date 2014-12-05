@@ -14,7 +14,7 @@ class PaymentAccount < ActiveRecord::Base
   belongs_to :user
   has_many :transaction_log
 
-  def credit(user, amount)
+  def credit(user, amount, description)
     self.current_balance += amount
     self.save
 
@@ -22,11 +22,11 @@ class PaymentAccount < ActiveRecord::Base
       actor_id: user.id,
       amount: amount,
       trans_type: "Credit",
-      description: "A transaction was made"
+      description: description
     })
   end
 
-  def debit(user, amount)
+  def debit(user, amount, description)
     # If there is not enough money in the account then throw the exception
     raise ArgumentError, "Insuffucient funds" if self.current_balance < amount
     self.current_balance -= amount
@@ -36,7 +36,7 @@ class PaymentAccount < ActiveRecord::Base
       actor_id: user.id,
       amount: amount,
       trans_type: "Debit",
-      description: "A transaction was made"
+      description: description
     })
   end
 
