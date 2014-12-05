@@ -120,9 +120,9 @@ module.service('$backend', function($http, $q) {
 
       });
     }
-    this.moneyOperation = function(account_id, op, amount) {
+    this.moneyOperation = function(account_id, op, amount, description) {
       return $q(function(resolve, reject) {
-        $http.post(account_credit_debit_path(account_id), {operation: op, amount: amount})
+        $http.post(account_credit_debit_path(account_id), {operation: op, amount: amount, description: description})
         .success(function(data, status, headers, config) {
           resolve();
         })

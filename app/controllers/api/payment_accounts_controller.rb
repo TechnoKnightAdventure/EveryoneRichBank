@@ -110,12 +110,13 @@ class Api::PaymentAccountsController < Api::ApiResource
     raise ArgumentError, 'Id is missing' if params[:id].nil?
     raise ArgumentError, 'Operation is missing' if params[:operation].nil?
     raise ArgumentError, 'Amount is missing' if params[:amount].nil?
+    raise ArgumentError, 'Description is missing' if params[:description].nil?
 
     account = PaymentAccount.find(params[:id])
     if params[:operation].to_sym == :credit
-      account.credit(current_user, params[:amount].to_f, "Money was deposited")
+      account.credit(current_user, params[:amount].to_f, params[:description])
     elsif params[:operation].to_sym == :debit
-      account.debit(current_user, params[:amount].to_f, "Money was withdrawn")
+      account.debit(current_user, params[:amount].to_f, params[:description])
     end
     
     _render({

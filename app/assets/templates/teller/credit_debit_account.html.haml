@@ -15,6 +15,9 @@
           %select.form-control{id: "op", "ng-model"=>"op"}
             %option{value: "credit", selected: ''} Credit
             %option{value: "debit"} Debit
+        .form-group
+          %label{for: "description"} Description
+          %input.form-control{id: "description", type: "string", "ng-model"=>"description"}
 
         %button.btn.btn-success{"ng-click"=>"do_operation()"} Submit
         %button.btn.btn-dafault{"ng-click"=>"cancel()"} Cancel

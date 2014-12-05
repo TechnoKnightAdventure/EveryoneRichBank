@@ -121,7 +121,7 @@ app.controller('CreditDebitController', function($scope, $state, $backend, $stat
   }
 
   $scope.do_operation = function() {
-    $backend.paymentAccount.moneyOperation($stateParams.aid, $scope.op, $scope.amount)
+    $backend.paymentAccount.moneyOperation($stateParams.aid, $scope.op, $scope.amount, $scope.description)
     .then(function() {
       $state.transitionTo('customer_detail', {id: $stateParams.id});
     }, function(reason) {
