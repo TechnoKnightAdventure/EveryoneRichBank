@@ -1,5 +1,12 @@
 %h3 User Listing
 .well{"ng-init"=>"refreshView()"}
+  .row
+    .col-sm-12
+      %button.btn.btn-danger{"ng-click"=>"applyPenalty()"} Apply Global Penalty
+      %button.btn.btn-success{"ng-click"=>"applyInterest()"} Apply Global Interest
+
+  %br
+
   .panel.panel-default{"ng-repeat" => "customer in customers"}
     .panel-body.clearfix
       %strong Email:

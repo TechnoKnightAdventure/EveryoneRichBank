@@ -10,13 +10,18 @@
       %table.table.table-striped{"ng-if"=>"logitems.length != 0"}
         %tr
           %th Amount
-          %th Name
+          %th Details
           %th Type
           %th Date
         %tr{"ng-repeat"=>"logitem in logitems"}
-          %td ${{logitem.amount | number:2}}
+          %td{"style"=>"text-align: right"}
+            %strong{"ng-class"=>"{'text-success': logitem.amount > 0, 'text-danger':  logitem.amount < 0}"}
+              %span{"ng-if"=>"logitem.amount < 0"}
+                \-${{0 - logitem.amount | number:2}}
+              %span{"ng-if"=>"logitem.amount > 0"}
+                ${{logitem.amount | number:2}}
           %td {{logitem.description}}
           %td {{logitem.trans_type}}
-          %td {{logitem.updated_at}}
+          %td {{logitem.updated_at | date }}
     .panel-footer
       .btn.btn-default{"ng-click"=>"back()"} Back

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   scope :format => true, :constraints => { :format => 'json' } do
     namespace :api do
       get 'payment_accounts/all'
+      post 'payment_accounts/op'
       resources :customers do
         get 'current'
         resources :payment_accounts, shallow: true do

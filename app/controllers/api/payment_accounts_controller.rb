@@ -33,8 +33,16 @@ class Api::PaymentAccountsController < Api::ApiResource
     
     amount = params[:amount].to_f
 
-    sourceAccount.debit(current_user, amount)
-    destinationAccount.credit(current_user, amount)
+    if destinationAccount.user_id == sourceAccount.user_id
+      sourceAccount.debit(current_user, amount, "Transfer to \"#{destinationAccount.name}\"")
+      destinationAccount.credit(current_user, amount, "Transfer from \"#{sourceAccount.name}\"")
+    else
+      sourceUser = User.find(sourceAccount.user_id)
+      destinationUser = User.find(destinationAccount.user_id)
+      sourceAccount.debit(current_user, amount, "Transfer to #{destinationUser.email}")
+      destinationAccount.credit(current_user, amount, "Transfer from #{sourceUser.email}")
+    end
+      
 
     _render({
       outcome: "positive"
@@ -46,6 +54,31 @@ class Api::PaymentAccountsController < Api::ApiResource
 
     _render({
       accounts: accounts
+    })
+  end
+
+  def op
+    raise ArgumentError, "No operation given" if params[:operation].nil?
+
+    numApplied = 0;
+    accounts = PaymentAccount.all
+    if params[:operation] == 'penalty'
+      accounts.each do |account|
+        applied = account.apply_penalty
+        numApplied += 1 if applied
+      end
+    elsif params[:operation] == 'interest'
+      accounts.each do |account|
+        applied = account.apply_interest
+        numApplied += 1 if applied
+      end
+    else
+      raise ArgumentError, "Invalid operation"
+    end
+
+    _render({
+      applied: numApplied,
+      outcome: "positive"
     })
   end
 
@@ -102,12 +135,13 @@ class Api::PaymentAccountsController < Api::ApiResource
     raise ArgumentError, 'Id is missing' if params[:id].nil?
     raise ArgumentError, 'Operation is missing' if params[:operation].nil?
     raise ArgumentError, 'Amount is missing' if params[:amount].nil?
+    raise ArgumentError, 'Description is missing' if params[:description].nil?
 
     account = PaymentAccount.find(params[:id])
     if params[:operation].to_sym == :credit
-      account.credit(current_user, params[:amount].to_f)
+      account.credit(current_user, params[:amount].to_f, params[:description])
     elsif params[:operation].to_sym == :debit
-      account.debit(current_user, params[:amount].to_f)
+      account.debit(current_user, params[:amount].to_f, params[:description])
     end
     
     _render({

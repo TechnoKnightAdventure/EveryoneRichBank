@@ -14,7 +14,13 @@ class PaymentAccount < ActiveRecord::Base
   belongs_to :user
   has_many :transaction_log
 
-  def credit(user, amount)
+  @@penalty_threshold = 100
+  @@penalty_amount    = 25
+
+  @@interest_threshold_low  = 1000
+  @@interest_threshold_high = 2000
+
+  def credit(user, amount, description)
     self.current_balance += amount
     self.save
 
@@ -22,11 +28,11 @@ class PaymentAccount < ActiveRecord::Base
       actor_id: user.id,
       amount: amount,
       trans_type: "Credit",
-      description: "A transaction was made"
+      description: description
     })
   end
 
-  def debit(user, amount)
+  def debit(user, amount, description)
     # If there is not enough money in the account then throw the exception
     raise ArgumentError, "Insuffucient funds" if self.current_balance < amount
     self.current_balance -= amount
@@ -34,23 +40,43 @@ class PaymentAccount < ActiveRecord::Base
 
     self.transaction_log.create({
       actor_id: user.id,
-      amount: amount,
+      amount: (-amount),
       trans_type: "Debit",
-      description: "A transaction was made"
+      description: description
     })
   end
 
-  def apply_penalty(amount)
-    self.current_balance -= amount
-    self.save
+  def apply_penalty()
+    if not self.current_balance.nil? and self.current_balance < @@penalty_threshold
+      self.current_balance -= @@penalty_amount
 
+      self.transaction_log.create({
+        actor_id: 0,
+        amount: (-@@penalty_amount),
+        trans_type: "Penalty",
+        description: "A penalty was applied because account was under #{@@penalty_threshold}"
+      });
+
+      self.save
+      return true
+    end
+
+    return false
+  end
+
+  def apply_interest(amount)
+    # self.current_balance -= @penalty_amount
+    #
     # self.transaction_log.create({
     #   actor_id: 0,
-    #   account_id: account.id,
-    #   amount: amount,
+    #   amount: (-@penalty_amount),
     #   type: "Debit",
-    #   description: "A transaction was made"
-    # })
+    #   description: "A penalty was applied because account was under #{@penalty_threshold}"
+    # });
+    #
+    # self.save
+
+    return false
   end
 
 end
