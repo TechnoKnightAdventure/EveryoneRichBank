@@ -8,6 +8,7 @@
 #  created_at      :datetime
 #  updated_at      :datetime
 #  name            :string(255)
+#  account_type    :string(255)      default("Checking")
 #
 
 require 'test_helper'
