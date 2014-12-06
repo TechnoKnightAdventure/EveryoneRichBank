@@ -14,9 +14,12 @@
           %th Type
           %th Date
         %tr{"ng-repeat"=>"logitem in logitems"}
-          %td 
-            <span ng-show="logitem.trans_type == 'Debit'"> <span ng-style="{color: 'red'}"> -${{logitem.amount | number:2}} </span> </span>
-            <span ng-show="logitem.trans_type == 'Credit'"> <span ng-style="{color: 'green'}"> ${{logitem.amount | number:2}} </span> </span>
+          %td{"style"=>"text-align: right"}
+            %strong{"ng-class"=>"{'text-success': logitem.amount > 0, 'text-danger':  logitem.amount < 0}"}
+              %span{"ng-if"=>"logitem.amount < 0"}
+                \-${{0 - logitem.amount | number:2}}
+              %span{"ng-if"=>"logitem.amount > 0"}
+                ${{logitem.amount | number:2}}
           %td {{logitem.description}}
           %td {{logitem.trans_type}}
           %td {{logitem.updated_at | date }}

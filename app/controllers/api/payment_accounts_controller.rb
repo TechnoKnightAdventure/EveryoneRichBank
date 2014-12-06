@@ -57,6 +57,31 @@ class Api::PaymentAccountsController < Api::ApiResource
     })
   end
 
+  def op
+    raise ArgumentError, "No operation given" if params[:operation].nil?
+
+    numApplied = 0;
+    accounts = PaymentAccount.all
+    if params[:operation] == 'penalty'
+      accounts.each do |account|
+        applied = account.apply_penalty
+        numApplied += 1 if applied
+      end
+    elsif params[:operation] == 'interest'
+      accounts.each do |account|
+        applied = account.apply_interest
+        numApplied += 1 if applied
+      end
+    else
+      raise ArgumentError, "Invalid operation"
+    end
+
+    _render({
+      applied: numApplied,
+      outcome: "positive"
+    })
+  end
+
   def create
     raise ArgumentError, "Name missing" if params[:name].nil?
 

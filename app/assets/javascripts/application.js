@@ -21,4 +21,5 @@
 //= require ui-bootstrap
 //= require dialogs.min
 //= require backend
+//= require jssor.slider.mini
 //= require main

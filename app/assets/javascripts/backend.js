@@ -48,6 +48,7 @@ module.service('$backend', function($http, $q) {
 
     // Named URLS
     function accounts_path()               { return 'api/payment_accounts/all.json'               }
+    function accounts_op_path()            { return 'api/payment_accounts/op.json'               }
     function account_path(id)              { return 'api/payment_accounts/'+id+'.json'            }
     function account_transfer_path(id)     { return 'api/payment_accounts/'+id+'/transfer.json'   }
     function account_credit_debit_path(id) { return 'api/payment_accounts/'+id+'/credit-debit.json'   }
@@ -122,6 +123,7 @@ module.service('$backend', function($http, $q) {
     }
     this.moneyOperation = function(account_id, op, amount, description) {
       return $q(function(resolve, reject) {
+
         $http.post(account_credit_debit_path(account_id), {operation: op, amount: amount, description: description})
         .success(function(data, status, headers, config) {
           resolve();
@@ -129,10 +131,36 @@ module.service('$backend', function($http, $q) {
         .error(function(data, status, headers, config) {
           reject(data.error);
         })
+
+      });
+    }
+    this.applyGlobalInterest = function() {
+      return $q(function(resolve, reject){
+
+        $http.post(accounts_op_path(), {operation: 'interest'})
+        .success(function(data, status, headers, config) {
+          resolve(data.applied);
+        })
+        .error(function(data) {
+          reject(data.error);
+        })
+
+      });
+    }
+    this.applyGlobalPenalty = function() {
+      return $q(function(resolve, reject){
+
+        $http.post(accounts_op_path(), {operation: 'penalty'})
+        .success(function(data, status, headers, config) {
+          resolve(data.applied);
+        })
+        .error(function(data) {
+          reject(data.error);
+        })
+
       });
     }
   };
-
   this.transactions = new function() {
     function payment_account_transaction_path(id) { return 'api/payment_accounts/'+id+'/transactions.json'   }
 
