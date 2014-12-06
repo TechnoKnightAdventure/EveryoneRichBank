@@ -34,7 +34,7 @@ class PaymentAccount < ActiveRecord::Base
 
     self.transaction_log.create({
       actor_id: user.id,
-      amount: amount,
+      amount: (-amount),
       trans_type: "Debit",
       description: description
     })
