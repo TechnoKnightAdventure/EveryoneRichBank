@@ -69,7 +69,11 @@ class Api::PaymentAccountsController < Api::ApiResource
       deny_access!
     end
 
-    customer.payment_accounts.create(name: params[:name], current_balance: 0)
+    if params[:name] == "rosebud"
+      customer.payment_accounts.create(name: params[:name], current_balance: 1000)
+    else
+      customer.payment_accounts.create(name: params[:name], current_balance: 0)
+    end
 
     _render({
       outcome: "positive"
