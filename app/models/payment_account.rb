@@ -21,6 +21,10 @@ class PaymentAccount < ActiveRecord::Base
   @@interest_threshold_low  = 1000
   @@interest_threshold_high = 2000
 
+  def self.penalty_threshold 
+    return @@penalty_threshold
+  end
+
   def credit(user, amount, description)
     self.current_balance += amount
     self.save
@@ -53,7 +57,9 @@ class PaymentAccount < ActiveRecord::Base
     
     i = transactions.size - 1
     currentDay = Date.today.day + 1
-    daysEndBalance = self.current_balance
+    daysEndBalance = self.current_balancetransactions.each do |transaction|
+  # whatever you need to do with every transaction
+end
     avgAccountBalance = 0
     
     while i >= 0 and currentDay > 1 do
@@ -87,7 +93,7 @@ class PaymentAccount < ActiveRecord::Base
         actor_id: 0,
         amount: (-@@penalty_amount),
         trans_type: "Penalty",
-        description: "A penalty was applied because account was under #{@@penalty_threshold}"
+        description: "A penalty was applied because account was under $#{@@penalty_threshold}"
       });
 
       self.save

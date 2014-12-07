@@ -38,10 +38,31 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
   $urlRouterProvider.otherwise('/404');
 });
 
-app.controller('MainController', function($scope, $rootScope, $backend, $state, dialogs) {
+app.controller('MainController', function($scope, $rootScope, $backend, $state, $q, dialogs) {
+  $scope.updateAlert = function() {
+    affected_accounts = _.reduce($scope.customer.payment_accounts, function(acc, account) {
+       if (account.current_balance <= $scope.penaltyThreshold) {
+         return acc + 1;
+       }
+       return acc;
+    }, 0);
+
+    if (affected_accounts > 0) {
+      $scope.lowBalanceAlert = "At least one of your accounts is under $"+$scope.penaltyThreshold
+    } else {
+      $scope.lowBalanceAlert = null;
+    }
+  }
+
   $scope.refreshView = function() {
-    $backend.customers.getCurrentCustomer().then(function(customer) {
-      $scope.customer = customer;
+    $q.all({
+      customer:  $backend.customers.getCurrentCustomer(),
+      threshold: $backend.paymentAccount.getPenaltyThreshold()
+    })
+    .then(function(data) {
+      $scope.customer         = data.customer;
+      $scope.penaltyThreshold = data.threshold;
+      $scope.updateAlert();
     }, function(reason) {
       alert(reason);
     });
@@ -77,7 +98,8 @@ app.controller('CreateAccountController' , function($scope, $rootScope, $backend
   }
   $scope.create_account = function() {
     var name = $scope.account_name;
-    $backend.paymentAccount.create('current', name).then(function() {
+    $backend.paymentAccount.create('current', name)
+    .then(function() {
       $state.transitionTo('view');
     }, function(reason) {
       alert(reason);
@@ -94,7 +116,8 @@ app.controller('MoneyTransferController' , function($scope, $rootScope, $backend
   }
 
   $scope.refreshAccounts = function() {
-    $backend.paymentAccount.getAccountsForCurrentUser().then(function(accounts) {
+    $backend.paymentAccount.getAccountsForCurrentUser()
+    .then(function(accounts) {
       // Deleting the account from which we are transfering
       $scope.accounts = _(accounts).filter(function(a) {
         return a.id != $stateParams.id; 
@@ -117,13 +140,15 @@ app.controller('TransactionHistoryController', function($scope, $state, $statePa
   $scope.accId = $stateParams.id;
 
   $scope.refreshView = function() {
-    $backend.paymentAccount.getAccountById($scope.accId).then(function(account) {
+    $backend.paymentAccount.getAccountById($scope.accId)
+    .then(function(account) {
       $scope.account = account;
     }, function(reason) { 
       alert(reason);
     });
 
-    $backend.transactions.getTransactionsForPaymentAccountId($scope.accId).then(function(logitems) {
+    $backend.transactions.getTransactionsForPaymentAccountId($scope.accId)
+    .then(function(logitems) {
       $scope.logitems = logitems;
     }, function(reason) {
       alert(reason);

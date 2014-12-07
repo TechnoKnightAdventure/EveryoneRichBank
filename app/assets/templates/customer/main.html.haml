@@ -1,4 +1,6 @@
 .row{"ng-init"=>"refreshView()"}
+  .alert.alert-danger{"ng-if"=>"lowBalanceAlert"}
+    Warning: {{lowBalanceAlert}}
   .col-md-4 
     %h3 {{customer.email}}
     %button.btn.btn-success{"ng-click" => "create_account()"} Create New Account

@@ -20,7 +20,8 @@ Rails.application.routes.draw do
   # Api methods
   scope :format => true, :constraints => { :format => 'json' } do
     namespace :api do
-      get 'payment_accounts/all'
+      get  'payment_accounts/all'
+      get  'payment_accounts/penalty-threshold' => 'payment_accounts#penalty_threshold'
       post 'payment_accounts/op'
       resources :customers do
         get 'current'

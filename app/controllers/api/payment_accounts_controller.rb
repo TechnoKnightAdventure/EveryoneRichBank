@@ -1,6 +1,12 @@
 class Api::PaymentAccountsController < Api::ApiResource
   skip_before_action :verify_authenticity_token
-  before_filter :check_access!, except: [:index, :transfer, :create, :destroy, :show]
+  before_filter :check_access!, except: [:penalty_threshold, :index, :transfer, :create, :destroy, :show]
+
+  def penalty_threshold 
+    _render({
+      threshold: PaymentAccount.penalty_threshold
+    })
+  end
 
   def index
     accounts = nil

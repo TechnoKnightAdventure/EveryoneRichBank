@@ -48,11 +48,25 @@ module.service('$backend', function($http, $q) {
 
     // Named URLS
     function accounts_path()               { return 'api/payment_accounts/all.json'               }
-    function accounts_op_path()            { return 'api/payment_accounts/op.json'               }
+    function accounts_penalty_threshold()  { return 'api/payment_accounts/penalty-threshold.json' }
+    function accounts_op_path()            { return 'api/payment_accounts/op.json'                }
     function account_path(id)              { return 'api/payment_accounts/'+id+'.json'            }
     function account_transfer_path(id)     { return 'api/payment_accounts/'+id+'/transfer.json'   }
-    function account_credit_debit_path(id) { return 'api/payment_accounts/'+id+'/credit-debit.json'   }
+    function account_credit_debit_path(id) { return 'api/payment_accounts/'+id+'/credit-debit.json'}
     function customer_accounts_path(cid)   { return 'api/customers/'+cid+'/payment_accounts.json' }
+
+    this.getPenaltyThreshold = function() {
+      return $q(function(resolve, reject) {
+
+        $http.get(accounts_penalty_threshold())
+        .success(function(data) {
+          resolve(data.threshold);
+        })
+        .error(function(msg, code) {
+          reject(code + " Error: can not get the penalty threshold");
+        });
+      });
+    }
 
     this.getAccountsForUserId = function(cid) {
       return $q(function(resolve, reject) {
