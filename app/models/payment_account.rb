@@ -62,11 +62,7 @@ class PaymentAccount < ActiveRecord::Base
         next
       end
 
-      if transactions[i].trans_type == "Debit" then
-        daysEndBalance -= transactions[i].amount
-      else 
-        daysEndBalance += transactions[i].amount
-      end
+      daysEndBalance -= transactions[i].amount
 
       i -= 1
     end
