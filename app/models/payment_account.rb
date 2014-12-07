@@ -46,6 +46,45 @@ class PaymentAccount < ActiveRecord::Base
     })
   end
 
+  def get_current_average_balance()
+    beginningOfMonth = DateTime.new(Date.today.year, Date.today.month, 1)
+    transactions = self.transaction_log.where("created_at > ?", beginningOfMonth)
+    
+    i = transactions.size - 1
+    currentDay = Date.today.day + 1
+    daysEndBalance = self.current_balance
+    avgAccountBalance = 0
+    
+    while i >= 0 and currentDay > 1 do
+      if currentDay != transactions[i].created_at.day then
+        currentDay -= 1
+        avgAccountBalance += daysEndBalance
+        next
+      end
+
+      if transactions[i].trans_type == "Debit" then
+        daysEndBalance -= transactions[i].amount
+      else 
+        daysEndBalance += transactions[i].amount
+      end
+
+      i -= 1
+    end
+
+    while currentDay > 1 do
+      avgAccountBalance += daysEndBalance
+      currentDay -= 1
+    end
+
+    necessaryFunds = ((@@penalty_threshold * Time.days_in_month(Date.today.month, Date.today.year)) - avgAccountBalance) / (Time.days_in_month(Date.today.month, Date.today.year) - Date.today.day)
+    avgAccountBalance /= Date.today.day
+
+    return {
+      avg_balance: avgAccountBalance,
+      necessary_funds: necessaryFunds
+    }
+  end
+
   def apply_penalty()
     if not self.current_balance.nil? and self.current_balance < @@penalty_threshold
       self.current_balance -= @@penalty_amount
