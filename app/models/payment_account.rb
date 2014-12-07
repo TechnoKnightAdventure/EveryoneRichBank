@@ -71,10 +71,7 @@ class PaymentAccount < ActiveRecord::Base
       i -= 1
     end
 
-    while currentDay > 1 do
-      avgAccountBalance += daysEndBalance
-      currentDay -= 1
-    end
+    avgAccountBalance += daysEndBalance * (currentDay - 1)
 
     necessaryFunds = ((@@penalty_threshold * Time.days_in_month(Date.today.month, Date.today.year)) - avgAccountBalance) / (Time.days_in_month(Date.today.month, Date.today.year) - Date.today.day)
     avgAccountBalance /= Date.today.day
