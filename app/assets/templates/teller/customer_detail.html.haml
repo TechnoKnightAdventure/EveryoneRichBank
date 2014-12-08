@@ -3,7 +3,9 @@
 %h3 Payment Accounts
 .well
   .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts"}
-    .panel-heading {{account.name}}
+    .panel-heading 
+      %strong [{{account.account_type}}]
+      {{account.name}}
     .panel-body 
       ${{account.current_balance | number : 2}}
       .pull-right

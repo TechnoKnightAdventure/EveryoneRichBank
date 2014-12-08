@@ -19,6 +19,7 @@ class PaymentAccount < ActiveRecord::Base
   @@penalty_amount    = 25
 
   @@interest_threshold_low  = 1000
+  @@interest_threshold_med  = 2000
   @@interest_threshold_high = 2000
 
   def self.penalty_threshold 
@@ -103,18 +104,36 @@ end
     return false
   end
 
-  def apply_interest(amount)
-    # self.current_balance -= @penalty_amount
-    #
-    # self.transaction_log.create({
-    #   actor_id: 0,
-    #   amount: (-@penalty_amount),
-    #   type: "Debit",
-    #   description: "A penalty was applied because account was under #{@penalty_threshold}"
-    # });
-    #
-    # self.save
+  def apply_interest()
+    balance = self.current_balance
 
+    if balance >= @@interest_threshold_low
+      with_interest = balance
+
+      if balance >= @@interest_threshold_high
+        with_interest = balance * 1.4 if self.account_type == 'savings'
+        with_interest = balance * 1.3 if self.account_type == 'checking'
+      elsif balance >= @@interest_threshold_med
+        with_interest = balance * 1.3 if self.account_type == 'savings'
+        with_interest = balance * 1.2 if self.account_type == 'checking'
+      elsif balance >= @@interest_threshold_low
+        with_interest = balance * 1.2 if self.account_type == 'savings'
+        with_interest = balance * 1.1 if self.account_type == 'checking'
+      end
+
+      interest = with_interest - balance
+
+      self.current_balance += interest
+      self.transaction_log.create({
+        actor_id: 0,
+        amount: interest,
+        trans_type: "Penalty",
+        description: "A penalty was applied because account was under $#{@@penalty_threshold}"
+      });
+
+      self.save
+      return true
+    end
     return false
   end
 

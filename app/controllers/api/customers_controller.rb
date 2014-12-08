@@ -28,7 +28,7 @@ class Api::CustomersController < Api::ApiResource
         only: [:id, :email],
         include: {
           payment_accounts: {
-            only: [:id, :current_balance, :name]
+            only: [:id, :current_balance, :name, :account_type]
           }
         }
       )

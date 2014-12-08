@@ -12,6 +12,7 @@
         Currently you dont have any accounts
       .panel.panel-default{"ng-repeat" => "account in customer.payment_accounts | orderBy:'id'"}
         .panel-heading
+          %strong [{{account.account_type}}]
           {{account.name}}
         .panel-body
           Balance: ${{account.current_balance | number : 2}}
