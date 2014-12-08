@@ -37,6 +37,11 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider){
     templateUrl: '<%= asset_path("teller/money_transfer.html") %>',
     controller: 'MoneyTransferController'
   });
+  state('transaction_history', {
+    url: '/teller/customer/:id/account/:aid/transaction-history',
+    templateUrl: '<%= asset_path("customer/transaction_history.html") %>',
+    controller: 'TransactionHistoryController'
+  });
 
   $('head').append($('<base/>').attr("href","/teller"));
   $locationProvider.html5Mode({ enabled: true });
@@ -109,6 +114,10 @@ app.controller('CustomerController', function($scope, $state, $backend, $statePa
 
   $scope.transfer = function(account) {
     $state.transitionTo('money_transfer', {id: $stateParams.id, aid: account.id});
+  }
+
+  $scope.transaction_history = function(account) {
+    $state.transitionTo('transaction_history', {id: $stateParams.id, aid: account.id});
   }
 })
 
@@ -207,4 +216,30 @@ app.controller('MoneyTransferController', function($scope, $state, $backend, $st
     $state.transitionTo('customer_detail', {id: $stateParams.id});
   }
 });
+
+app.controller("TransactionHistoryController", function($scope, $state, $stateParams, $backend) {
+  $scope.accId = $stateParams.aid;
+
+  $scope.refreshView = function() {
+    $backend.paymentAccount.getAccountById($scope.accId)
+    .then(function(account) {
+      $scope.account = account;
+    }, function(reason) { 
+      alert(reason);
+    });
+
+    $backend.transactions.getTransactionsForPaymentAccountId($scope.accId)
+    .then(function(logitems) {
+      $scope.logitems = logitems;
+    }, function(reason) {
+      console.log(reason)
+      alert(reason);
+    });
+  };
+
+  $scope.back = function() {
+    $state.transitionTo('customer_detail', {id: $stateParams.id});
+  }
+});
+
 // vim: ft=javascript

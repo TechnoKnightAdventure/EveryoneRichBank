@@ -3,9 +3,10 @@
 %h3 Payment Accounts
 .well
   .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts | orderBy: id"}
-    .panel-heading 
+    .panel-heading.clearfix 
       %strong [{{account.account_type}}]
       {{account.name}}
+      %button.pull-right.btn.btn-dafault{"ng-click"=>"transaction_history(account)"} Transaction History
     .panel-body 
       ${{account.current_balance | number : 2}}
       .pull-right

@@ -186,7 +186,7 @@ module.service('$backend', function($http, $q) {
           resolve(data.transactions)
         })
         .error(function(msg, code) {
-          reject(code + "Error: Can not list transactions for account [" + id + "]" + msg);
+          reject(code + "Error: Can not list transactions for account [" + id + "]" + msg.error);
         })
       });
     }

@@ -4,13 +4,14 @@ class Api::TransactionsController < Api::ApiResource
     raise ArgumentError, "Payment Account id is missng" if params[:payment_account_id].nil?
 
     begin
+      account = nil
       if current_user.role == 'customer' 
-        customer = current_user
+        customer     = current_user
+        account      = customer.payment_account.find(params[:payment_account_id])
       elsif 
-        customer = User.find(params[:customer_id])
+        account      = PaymentAccount.find(params[:payment_account_id])
       end
 
-      account      = customer.payment_account.find(params[:payment_account_id])
       transactions = account.transaction_log.all
     rescue Exception => e
       logger.fatal("Can not get transaction '#{e.message}'")

@@ -110,13 +110,17 @@ end
     if balance >= @@interest_threshold_low
       with_interest = balance
 
+      account_over = 0
       if balance >= @@interest_threshold_high
+        account_over = @@interest_threshold_high
         with_interest = balance * 1.04 if self.account_type == 'savings'
         with_interest = balance * 1.03 if self.account_type == 'checking'
       elsif balance >= @@interest_threshold_med
+        account_over = @@interest_threshold_med
         with_interest = balance * 1.03 if self.account_type == 'savings'
         with_interest = balance * 1.02 if self.account_type == 'checking'
       elsif balance >= @@interest_threshold_low
+        account_over = @@interest_threshold_low
         with_interest = balance * 1.02 if self.account_type == 'savings'
         with_interest = balance * 1.01 if self.account_type == 'checking'
       end
@@ -128,10 +132,7 @@ end
         actor_id: 0,
         amount: interest,
         trans_type: "Interest",
-        description: "Interest was given because account was over $
-        #{@@interest_threshold_high if balance >= @@interest_threshold_high}
-        #{@@interest_threshold_med if balance >= @@interest_threshold_med and balance < @@interest_threshold_high}
-        #{@@interest_threshold_low if balance < @@interest_threshold_med}"
+        description: "Interest was given because account was over $#{account_over}"
       });
 
       self.save
