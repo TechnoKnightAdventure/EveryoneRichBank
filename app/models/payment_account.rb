@@ -111,14 +111,14 @@ end
       with_interest = balance
 
       if balance >= @@interest_threshold_high
-        with_interest = balance * 1.4 if self.account_type == 'savings'
-        with_interest = balance * 1.3 if self.account_type == 'checking'
+        with_interest = balance * 1.04 if self.account_type == 'savings'
+        with_interest = balance * 1.03 if self.account_type == 'checking'
       elsif balance >= @@interest_threshold_med
-        with_interest = balance * 1.3 if self.account_type == 'savings'
-        with_interest = balance * 1.2 if self.account_type == 'checking'
+        with_interest = balance * 1.03 if self.account_type == 'savings'
+        with_interest = balance * 1.02 if self.account_type == 'checking'
       elsif balance >= @@interest_threshold_low
-        with_interest = balance * 1.2 if self.account_type == 'savings'
-        with_interest = balance * 1.1 if self.account_type == 'checking'
+        with_interest = balance * 1.02 if self.account_type == 'savings'
+        with_interest = balance * 1.01 if self.account_type == 'checking'
       end
 
       interest = with_interest - balance
