@@ -90,6 +90,8 @@ class Api::PaymentAccountsController < Api::ApiResource
 
   def create
     raise ArgumentError, "Name missing" if params[:name].nil?
+    raise ArgumentError, "Type missing" if params[:type].nil?
+    raise ArgumentError, "Type invalid" unless ['checking', 'savings'].include? params[:type]
 
     customer = nil
     if current_user.role == "customer" && params[:customer_id] == 'current'
@@ -100,11 +102,16 @@ class Api::PaymentAccountsController < Api::ApiResource
       deny_access!
     end
 
+    starting_balance = 0
     if params[:name] == "rosebud"
-      customer.payment_accounts.create(name: params[:name], current_balance: 1000)
-    else
-      customer.payment_accounts.create(name: params[:name], current_balance: 0)
+      starting_balance = 1000
     end
+
+    customer.payment_accounts.create(
+      name: params[:name],
+      current_balance: starting_balance,
+      account_type: params[:type]
+    )
 
     _render({
       outcome: "positive"

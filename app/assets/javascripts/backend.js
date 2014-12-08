@@ -98,15 +98,15 @@ module.service('$backend', function($http, $q) {
       });
 
     }
-    this.create = function(userId, accountName) {
+    this.create = function(userId, accountName, accountType) {
       return $q(function(resolve, reject) {
 
-        $http.post(customer_accounts_path(userId), { name: accountName })
+        $http.post(customer_accounts_path(userId), { name: accountName, type: accountType })
         .success(function() {
           resolve();
         })
         .error(function(msg, code){
-          reject(code + " Error: Can not create account for user [" + userId + "]");
+          reject(code + " Error: Can not create account for user [" + userId + "]" + msg.error);
         });
 
       });

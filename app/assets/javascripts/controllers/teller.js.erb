@@ -114,8 +114,12 @@ app.controller('CustomerController', function($scope, $state, $backend, $statePa
 
 app.controller('CreateAccountController', function($scope, $state, $backend, $stateParams) {
    $scope.create_account = function() {
-     $backend.paymentAccount.create($stateParams.id, $scope.account_name)
-     .then(function(data) {
+
+     $backend.paymentAccount.create(
+       $stateParams.id,
+       $scope.account_name,
+       $scope.account_type.toLowerCase()
+     ).then(function(data) {
        $state.transitionTo('customer_detail', {id: $stateParams.id});
      }, function(reason) {
        alert(reason);

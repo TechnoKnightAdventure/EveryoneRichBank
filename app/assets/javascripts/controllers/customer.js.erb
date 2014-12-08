@@ -98,7 +98,8 @@ app.controller('CreateAccountController' , function($scope, $rootScope, $backend
   }
   $scope.create_account = function() {
     var name = $scope.account_name;
-    $backend.paymentAccount.create('current', name)
+    var type = $scope.account_type.toLowerCase();
+    $backend.paymentAccount.create('current', name, type)
     .then(function() {
       $state.transitionTo('view');
     }, function(reason) {

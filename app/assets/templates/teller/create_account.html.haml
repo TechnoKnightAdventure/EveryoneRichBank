@@ -5,8 +5,13 @@
     .panel-body
       %form{"role"=>"form"}
         .form-group
-          %label{for: "account-name"} New Account Name
+          %label{for: "account-name"} Account Name
           %input.form-control{id: "account-name", "ng-model"=>"account_name"}
+        .form-group
+          %label{for: "account-type"} Account Type
+          %select.form-control{id: "account-type", "ng-model"=>"account_type"}
+            %option Savings
+            %option Checking
         %button.btn.btn-success{"ng-click"=>"create_account()"} Create Account
         %button.btn.btn-dafault{"ng-click"=>"cancel()"} Cancel
 
