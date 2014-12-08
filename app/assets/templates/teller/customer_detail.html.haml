@@ -2,7 +2,7 @@
 %h3{"ng-init"=>"refreshUser()"} {{customer.email}}
 %h3 Payment Accounts
 .well
-  .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts"}
+  .panel.panel-default{"ng-repeat"=>"account in customer.payment_accounts | orderBy: id"}
     .panel-heading 
       %strong [{{account.account_type}}]
       {{account.name}}
