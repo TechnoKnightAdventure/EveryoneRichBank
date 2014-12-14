@@ -1,8 +1,12 @@
+# Creates and deletes payment accounts
+
 class Api::PaymentAccountsController < Api::ApiResource
   skip_before_action :verify_authenticity_token
   before_filter :check_access!, except: [:penalty_threshold, :index, :transfer, :create, :destroy, :show]
 
-  def penalty_threshold 
+  # Displays penalty threshold value under which we
+  # notify the customer
+  def penalty_threshold
     _render({
       threshold: PaymentAccount.penalty_threshold
     })
@@ -23,7 +27,7 @@ class Api::PaymentAccountsController < Api::ApiResource
       )
     })
   end
-
+  # Transfers funds between payment accounts
   def transfer
     raise ArgumentError, "Amount is missing"                 if params[:amount].nil?
     raise ArgumentError, "Source Account id is missing"      if params[:fromId].nil?
@@ -36,7 +40,7 @@ class Api::PaymentAccountsController < Api::ApiResource
       logger.fatal("Can not find record '#{e.message}'")
       raise_app_error!
     end
-    
+
     amount = params[:amount].to_f
 
     if destinationAccount.user_id == sourceAccount.user_id
@@ -48,13 +52,13 @@ class Api::PaymentAccountsController < Api::ApiResource
       sourceAccount.debit(current_user, amount, "Transfer to #{destinationUser.email}")
       destinationAccount.credit(current_user, amount, "Transfer from #{sourceUser.email}")
     end
-      
+
 
     _render({
       outcome: "positive"
     })
   end
-
+  # Lists all of the payment accounts of a particular user
   def all
     accounts = PaymentAccount.where(user_id: params[:user_id])
 
@@ -63,6 +67,8 @@ class Api::PaymentAccountsController < Api::ApiResource
     })
   end
 
+  # This function can either do penalty or interest determined by
+  # user input
   def op
     raise ArgumentError, "No operation given" if params[:operation].nil?
 
@@ -88,6 +94,7 @@ class Api::PaymentAccountsController < Api::ApiResource
     })
   end
 
+  # Creates payment accounts
   def create
     raise ArgumentError, "Name missing" if params[:name].nil?
     raise ArgumentError, "Type missing" if params[:type].nil?
@@ -118,6 +125,7 @@ class Api::PaymentAccountsController < Api::ApiResource
     })
   end
 
+  # This function deletes a given payment account
   def destroy
     raise ArgumentError, "Id missing" if params[:id].nil?
 
@@ -148,7 +156,8 @@ class Api::PaymentAccountsController < Api::ApiResource
   end
 
 
-  def credit_debit 
+  # Lets the teller credit or debit payment accounts
+  def credit_debit
     raise ArgumentError, 'Id is missing' if params[:id].nil?
     raise ArgumentError, 'Operation is missing' if params[:operation].nil?
     raise ArgumentError, 'Amount is missing' if params[:amount].nil?
@@ -160,7 +169,7 @@ class Api::PaymentAccountsController < Api::ApiResource
     elsif params[:operation].to_sym == :debit
       account.debit(current_user, params[:amount].to_f, params[:description])
     end
-    
+
     _render({
       outcome: "positive"
     })
@@ -168,6 +177,8 @@ class Api::PaymentAccountsController < Api::ApiResource
 
   protected
 
+  # Checks to make sure the current user has access to teller
+  # methods
   def check_access!
     deny_access! unless user_signed_in?
     deny_access! unless current_user.role == 'teller'

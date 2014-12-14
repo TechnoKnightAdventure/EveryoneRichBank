@@ -1,3 +1,4 @@
+# Lists all of the transactions for an existing payment account
 class Api::TransactionsController < Api::ApiResource
 
   def index
@@ -5,10 +6,10 @@ class Api::TransactionsController < Api::ApiResource
 
     begin
       account = nil
-      if current_user.role == 'customer' 
+      if current_user.role == 'customer'
         customer     = current_user
         account      = customer.payment_account.find(params[:payment_account_id])
-      elsif 
+      elsif
         account      = PaymentAccount.find(params[:payment_account_id])
       end
 
